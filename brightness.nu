@@ -22,6 +22,10 @@ def get_devices [] {
 	[] | append (ls $backlight) | append (ls $led) | $in.name
 }
 
+def get_default_device [] {
+	get_devices | first
+}
+
 def get_brightness [device: path] {
 	open --raw ($device | path join $brightness) | into int
 }
@@ -43,11 +47,16 @@ def "brightness list" [] {
 		{
 			name:			$name
 			class:			$class
-			brightness:		$brightness
 			"brightness (%)":	$brightness_percent
+			brightness:		$brightness
 			max_brightness:		$max_brightness
 		}
 	}
 }
 
-brightness list
+def "brightness info" [] {
+	# brightnessctl seems to just be returning the first device
+	brightness list | first
+}
+
+brightness info
