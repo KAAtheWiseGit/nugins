@@ -76,6 +76,17 @@ def "brightness set" [
 				end: $span.end,
 			}
 		}
+	} else if $value < 0 {
+		let span = (metadata $value).span;
+
+		error make {
+			msg: "Tried to set negative brightness",
+			label: {
+				text: "Must be positive",
+				start: $span.start,
+				end: $span.end,
+			}
+		}
 	}
 
 	let $path = (
