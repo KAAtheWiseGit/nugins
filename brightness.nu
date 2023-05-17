@@ -1,7 +1,8 @@
 #!/usr/bin/nu
 
+const sys = "/sys/class/"
 const backlight = "/sys/class/backlight"
-const led = "/sys/class/leds"
+const leds = "/sys/class/leds"
 const brightness = "brightness"
 const max_brightness = "max_brightness"
 
@@ -19,7 +20,7 @@ def brightness [] {
 }
 
 def get_devices [] {
-	[] | append (ls $backlight) | append (ls $led) | $in.name
+	[] | append (ls $backlight) | append (ls $leds) | $in.name
 }
 
 def get_default_device [] {
@@ -59,4 +60,30 @@ def "brightness info" [] {
 	brightness list | first
 }
 
-brightness info
+def "brightness set" [
+	value: int	# new device brightness
+] {
+	let $device = (brightness info)
+
+	if $value > $device.max_brightness {
+		let span = (metadata $value).span;
+
+		error make {
+			msg: "Tried to set brightness higher than maximum",
+			label: {
+				text: $"Must be less than or equal to ($device.max_brightness)",
+				start: $span.start,
+				end: $span.end,
+			}
+		}
+	}
+
+	let $path = (
+		$sys
+		| path join $device.class
+		| path join $device.name
+		| path join "brightness"
+	)
+
+	$value | save $path --force
+}
