@@ -64,7 +64,10 @@ export def "brightness list" [] {
 	 	let $class = ($device | path dirname | path basename)
 	 	let $brightness = (get_brightness $device)
 	 	let $max_brightness = (get_max_brightness $device)
-		let $brightness_percent = $brightness / $max_brightness * 100
+		let $brightness_percent = (
+			$brightness / $max_brightness * 100
+			| math round
+		)
 
 		{
 			name:			$name
@@ -79,27 +82,40 @@ export def "brightness list" [] {
 export def brightness [
 	operation: string
 	value?
+
+	--quiet (-q)
 ] {
 	let $device = (brightness list | first)
 
-	if $value != null {
-		parse_value $value (metadata $value).span $device
-	} else if $operation != "info" {
-		let $span = (metadata $operation).span
-		error make {
-			msg: $"Missing a value to ($operation)"
-			label: {
-				text: "{value}"
-				start: ($span.end - 1)
-				end: ($span.end)
+	if $operation != "info" {
+		if $value != null {
+			let $span = (metadata $value).span
+			let $value = (parse_value $value $span $device)
+
+			let $value = match $operation {
+			"set" => $value
+			"increase" => ($device.brightness + $value)
+			"decrease" => ($device.brightness - $value)
+			}
+
+			set_brightness $device $value
+
+		} else {
+			let $span = (metadata $operation).span
+			error make {
+				msg: $"Missing a value to ($operation)"
+				label: {
+					text: "{value}"
+					start: ($span.end - 1)
+					end: ($span.end)
+				}
 			}
 		}
 	}
 
-	match $operation {
-	"info" => $device
-	"set" => (set_brightness $device $value)
-	"increase" => (set_brightness $device ($device.brightness + $value))
-	"decrease" => (set_brightness $device ($device.brightness - $value))
+	let $device = (brightness list | first)
+
+	if $quiet != null {
+		$device
 	}
 }
