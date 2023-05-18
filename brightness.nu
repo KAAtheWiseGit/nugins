@@ -36,8 +36,19 @@ def set_brightness [device, value: int] {
 
 const value_regex = '(?P<num>[[:digit:]]*)(?P<percentage>%?)'
 
-def parse_value [value, device] {
-	let $value = ($value | parse -r $value_regex | first | into int num)
+def parse_value [value, span, device] {
+	let $value = (try {
+		$value | parse -r $value_regex | first | into int num
+	} catch {
+		error make {
+			msg: "Brightness value must be an integer with an optional '%' at the end"
+			label: {
+				text: "malformed value"
+				start: $span.start
+				end: $span.end
+			}
+		}
+	})
 
 	match $value.percentage {
 	'%' => { $value.num * $device.max_brightness / 100 }
@@ -75,7 +86,7 @@ export def "brightness set" [
 ] {
 	let $device = (brightness info)
 
-	let $value = (parse_value $value $device)
+	let $value = (parse_value $value (metadata $value).span $device)
 
 	set_brightness $device $value
 }
@@ -85,7 +96,7 @@ export def "brightness increase" [
 ] {
 	let $device = (brightness info)
 
-	let $value = (parse_value $value $device)
+	let $value = (parse_value $value (metadata $value).span $device)
 
 	set_brightness $device ($device.brightness + $value)
 }
@@ -95,7 +106,7 @@ export def "brightness decrease" [
 ] {
 	let $device = (brightness info)
 
-	let $value = (parse_value $value $device)
+	let $value = (parse_value $value (metadata $value).span $device)
 
 	set_brightness $device ($device.brightness - $value)
 }
