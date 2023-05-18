@@ -83,7 +83,7 @@ export def brightness [
 	operation: string
 	value?
 
-	--quiet (-q)
+	--quiet (-q)	# Suppress output
 ] {
 	let $device = (brightness list | first)
 
@@ -115,7 +115,7 @@ export def brightness [
 
 	let $device = (brightness list | first)
 
-	if $quiet != null {
-		$device
+	if not $quiet {
+		print $device
 	}
 }
