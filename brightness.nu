@@ -56,6 +56,7 @@ def parse_value [value, span, device] {
 	} | math round
 }
 
+# List devices with available brightness controls
 export def "brightness list" [] {
 	let $devices = (get_devices)
 
@@ -83,7 +84,8 @@ export def brightness [
 	operation: string
 	value?
 
-	--quiet (-q)	# Suppress output
+	--quiet (-q)		# Suppress output
+	--min (-m): int = 1	# Minimum below whcih the brightness will not be lowered
 ] {
 	let $device = (brightness list | first)
 
@@ -91,6 +93,7 @@ export def brightness [
 		if $value != null {
 			let $span = (metadata $value).span
 			let $value = (parse_value $value $span $device)
+			let $value = ([$min $value] | math max)
 
 			let $value = match $operation {
 			"set" => $value
