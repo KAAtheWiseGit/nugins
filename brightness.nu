@@ -19,6 +19,11 @@ def get_max_brightness [device: path] {
 }
 
 def set_brightness [device, value: int] {
+	let $value = (
+		if $value > $device.max_brightness { $device.max_brightness }
+		else $value
+	)
+
 	let $path = (
 		$sys
 		| path join $device.class
@@ -27,6 +32,17 @@ def set_brightness [device, value: int] {
 	)
 
 	$value | save $path --force
+}
+
+const value_regex = '(?P<num>[[:digit:]]*)(?P<percentage>%?)'
+
+def parse_value [value, device] {
+	let $value = ($value | parse -r $value_regex | first | into int num)
+
+	match $value.percentage {
+	'%' => { $value.num * $device.max_brightness / 100 }
+	_ => $value.num
+	} | math round
 }
 
 export def "brightness list" [] {
@@ -55,33 +71,31 @@ export def "brightness info" [] {
 }
 
 export def "brightness set" [
-	value: int	# new device brightness
+	value	# new device brightness
 ] {
 	let $device = (brightness info)
 
-	if $value > $device.max_brightness {
-		let span = (metadata $value).span;
-
-		error make {
-			msg: "Tried to set brightness higher than maximum",
-			label: {
-				text: $"Must be less than or equal to ($device.max_brightness)",
-				start: $span.start,
-				end: $span.end,
-			}
-		}
-	} else if $value < 0 {
-		let span = (metadata $value).span;
-
-		error make {
-			msg: "Tried to set negative brightness",
-			label: {
-				text: "Must be positive",
-				start: $span.start,
-				end: $span.end,
-			}
-		}
-	}
+	let $value = (parse_value $value $device)
 
 	set_brightness $device $value
+}
+
+export def "brightness increase" [
+	value
+] {
+	let $device = (brightness info)
+
+	let $value = (parse_value $value $device)
+
+	set_brightness $device ($device.brightness + $value)
+}
+
+export def "brightness decrease" [
+	value
+] {
+	let $device = (brightness info)
+
+	let $value = (parse_value $value $device)
+
+	set_brightness $device ($device.brightness - $value)
 }
