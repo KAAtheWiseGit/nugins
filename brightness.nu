@@ -76,37 +76,22 @@ export def "brightness list" [] {
 	}
 }
 
-export def "brightness info" [] {
-	# brightnessctl seems to just be returning the first device
-	brightness list | first
-}
-
-export def "brightness set" [
-	value	# new device brightness
+export def brightness [
+	operation: string
+	value?
 ] {
-	let $device = (brightness info)
+	let $device = (brightness list | first)
 
-	let $value = (parse_value $value (metadata $value).span $device)
+	let $value = (if $value != null {
+		parse_value $value (metadata $value).span $device
+	} else {
+		0
+	})
 
-	set_brightness $device $value
-}
-
-export def "brightness increase" [
-	value
-] {
-	let $device = (brightness info)
-
-	let $value = (parse_value $value (metadata $value).span $device)
-
-	set_brightness $device ($device.brightness + $value)
-}
-
-export def "brightness decrease" [
-	value
-] {
-	let $device = (brightness info)
-
-	let $value = (parse_value $value (metadata $value).span $device)
-
-	set_brightness $device ($device.brightness - $value)
+	match $operation {
+	"info" => $device
+	"set" => (set_brightness $device $value)
+	"increase" => (set_brightness $device ($device.brightness + $value))
+	"decrease" => (set_brightness $device ($device.brightness - $value))
+	}
 }
