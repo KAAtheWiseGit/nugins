@@ -82,11 +82,19 @@ export def brightness [
 ] {
 	let $device = (brightness list | first)
 
-	let $value = (if $value != null {
+	if $value != null {
 		parse_value $value (metadata $value).span $device
-	} else {
-		0
-	})
+	} else if $operation != "info" {
+		let $span = (metadata $operation).span
+		error make {
+			msg: $"Missing a value to ($operation)"
+			label: {
+				text: "{value}"
+				start: ($span.end - 1)
+				end: ($span.end)
+			}
+		}
+	}
 
 	match $operation {
 	"info" => $device
