@@ -115,12 +115,13 @@ export def brightness [
 		let $value = (
 			parse_value $value (metadata $value).span $device
 			| [$min $in] | math max
-			| match $operation {
-			"set" => $value
-			"increase" => ($device.brightness + $value)
-			"decrease" => ($device.brightness - $value)
-			}
 		)
+
+		let $value = (match $operation {
+		"set" => $value
+		"increase" => ($device.brightness + $value)
+		"decrease" => ($device.brightness - $value)
+		})
 
 		set_brightness $device $value
 
