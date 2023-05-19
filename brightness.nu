@@ -36,14 +36,6 @@ def get_devices [
 	| if $device != null { filter {|d| $d.name == $device } } else {}
 	| if $class != null { filter {|d| $d.class == $class } } else {}
 	| if $first or $device != null { first } else {}
-
-	# | filter {|d|
-	# 	$d.name == $device or $device == null
-	# } | filter {|d|
-	# 	$d.category == $category
-	# } | do {||
-	# 	if $first or $device != null { $in | first } else { $in }
-	# }
 }
 
 def get_brightness [device: path] {
@@ -55,16 +47,13 @@ def get_max_brightness [device: path] {
 }
 
 def set_brightness [device, value: int] {
-	let $value = (
-		if $value > $device.max_brightness { $device.max_brightness }
-		else $value
-	)
+	let $value = ([$value $device.max_brightness] | math min)
 
 	let $path = (
 		$sys
 		| path join $device.class
 		| path join $device.name
-		| path join "brightness"
+		| path join $brightness
 	)
 
 	$value | save $path --force
@@ -106,10 +95,10 @@ export def brightness [
 	--device (-d): string	# Device name
 	--class (-c): string	# Device class
 ] {
-	let $device = (get_devices -d $device -c $class --first)
-
 	if $operation != "info" {
 		if $value != null {
+			let $device = (get_devices -d $device -c $class --first)
+
 			let $span = (metadata $value).span
 			let $value = (parse_value $value $span $device)
 			let $value = ([$min $value] | math max)
@@ -134,9 +123,7 @@ export def brightness [
 		}
 	}
 
-	let $device = (get_devices -d $device.name -c $class --first)
+	let $device = (get_devices -d $device -c $class --first)
 
-	if not $quiet {
-		print $device
-	}
+	if not $quiet { print $device }
 }
