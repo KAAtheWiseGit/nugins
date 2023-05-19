@@ -6,8 +6,36 @@ const leds = "/sys/class/leds"
 const brightness = "brightness"
 const max_brightness = "max_brightness"
 
-def get_devices [] {
-	[] | append (ls $backlight) | append (ls $leds) | $in.name
+def get_devices [
+	--device (-d): string
+	--first
+] {
+	[]
+	| append (ls $backlight)
+	| append (ls $leds)
+	| $in.name
+	| each {|device|
+		let $name = ($device | path basename)
+		let $class = ($device | path dirname | path basename)
+		let $brightness = (get_brightness $device)
+		let $max_brightness = (get_max_brightness $device)
+		let $brightness_percent = (
+			$brightness / $max_brightness * 100
+			| math round
+		)
+
+		{
+			name:			$name
+			class:			$class
+			"brightness (%)":	$brightness_percent
+			brightness:		$brightness
+			max_brightness:		$max_brightness
+		}
+	} | each {|d|
+		if $d.name == $device or $device == null { $d }
+	} | do {|$in|
+		if $first or $device != null { $in | first } else { $in }
+	}
 }
 
 def get_brightness [device: path] {
@@ -58,26 +86,7 @@ def parse_value [value, span, device] {
 
 # List devices with available brightness controls
 export def "brightness list" [] {
-	let $devices = (get_devices)
-
-	$devices | each { |device|
-	 	let $name = ($device | path basename)
-	 	let $class = ($device | path dirname | path basename)
-	 	let $brightness = (get_brightness $device)
-	 	let $max_brightness = (get_max_brightness $device)
-		let $brightness_percent = (
-			$brightness / $max_brightness * 100
-			| math round
-		)
-
-		{
-			name:			$name
-			class:			$class
-			"brightness (%)":	$brightness_percent
-			brightness:		$brightness
-			max_brightness:		$max_brightness
-		}
-	}
+	get_devices
 }
 
 export def brightness [
@@ -86,8 +95,9 @@ export def brightness [
 
 	--quiet (-q)		# Suppress output
 	--min (-m): int = 1	# Minimum below whcih the brightness will not be lowered
+	--device (-d): string	# Device name
 ] {
-	let $device = (brightness list | first)
+	let $device = (get_devices --device $device)
 
 	if $operation != "info" {
 		if $value != null {
@@ -102,7 +112,6 @@ export def brightness [
 			}
 
 			set_brightness $device $value
-
 		} else {
 			let $span = (metadata $operation).span
 			error make {
@@ -116,7 +125,7 @@ export def brightness [
 		}
 	}
 
-	let $device = (brightness list | first)
+	let $device = (get_devices --device $device.name)
 
 	if not $quiet {
 		print $device
