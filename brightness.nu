@@ -35,7 +35,7 @@ def get_devices [
 	}
 	| if $device != null { filter {|d| $d.name =~ $device } } else {}
 	| if $class != null { filter {|d| $d.class == $class } } else {}
-	| if $first or $device != null {
+	| if $first {
 		try { first } catch {
 			error make { msg: $"Device matching ($device) not found" }
 		}
