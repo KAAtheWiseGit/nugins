@@ -33,7 +33,7 @@ def get_devices [
 			max_brightness:		$max_brightness
 		}
 	}
-	| if $device != null { filter {|d| $d.name == $device } } else {}
+	| if $device != null { filter {|d| $d.name =~ $device } } else {}
 	| if $class != null { filter {|d| $d.class == $class } } else {}
 	| if $first or $device != null { first } else {}
 }
@@ -92,7 +92,7 @@ export def brightness [
 
 	--quiet (-q)		# Suppress output
 	--min (-m): int = 1	# Minimum below whcih the brightness will not be lowered
-	--device (-d): string	# Device name
+	--device (-d): string	# Device name (can be a regex)
 	--class (-c): string	# Device class
 ] {
 	if $operation != "info" {
