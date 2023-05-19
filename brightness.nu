@@ -35,7 +35,11 @@ def get_devices [
 	}
 	| if $device != null { filter {|d| $d.name =~ $device } } else {}
 	| if $class != null { filter {|d| $d.class == $class } } else {}
-	| if $first or $device != null { first } else {}
+	| if $first or $device != null {
+		try { first } catch {
+			error make { msg: $"Device matching ($device) not found" }
+		}
+	} else {}
 }
 
 def get_brightness [device: path] {
@@ -81,11 +85,6 @@ def parse_value [value, span, device] {
 	} | math round
 }
 
-# List devices with available brightness controls
-export def "brightness list" [] {
-	get_devices
-}
-
 export def brightness [
 	operation: string
 	value?
@@ -95,22 +94,11 @@ export def brightness [
 	--device (-d): string	# Device name (can be a regex)
 	--class (-c): string	# Device class
 ] {
-	if $operation != "info" {
-		if $value != null {
-			let $device = (get_devices -d $device -c $class --first)
-
-			let $span = (metadata $value).span
-			let $value = (parse_value $value $span $device)
-			let $value = ([$min $value] | math max)
-
-			let $value = match $operation {
-			"set" => $value
-			"increase" => ($device.brightness + $value)
-			"decrease" => ($device.brightness - $value)
-			}
-
-			set_brightness $device $value
-		} else {
+	match $operation {
+	"info" => { get_devices -d $device -c $class --first }
+	"list" => { get_devices -d $device -c $class }
+	"set" | "increase" | "decrease" => {
+		if $value == null {
 			let $span = (metadata $operation).span
 			error make {
 				msg: $"Missing a value to ($operation)"
@@ -121,9 +109,23 @@ export def brightness [
 				}
 			}
 		}
+
+		let $device = (get_devices -d $device -c $class --first)
+
+		let $value = (
+			parse_value $value (metadata $value).span $device
+			| [$min $in] | math max
+			| match $operation {
+			"set" => $value
+			"increase" => ($device.brightness + $value)
+			"decrease" => ($device.brightness - $value)
+			}
+		)
+
+		set_brightness $device $value
+
+		let $device = (get_devices -d $device.name -c $class --first)
+		if not $quiet { print $device }
 	}
-
-	let $device = (get_devices -d $device -c $class --first)
-
-	if not $quiet { print $device }
+	}
 }
