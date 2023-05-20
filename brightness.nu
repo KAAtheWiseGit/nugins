@@ -85,6 +85,25 @@ def parse_value [value, span, device] {
 	} | math round
 }
 
+const tmp_dir = "/tmp/"
+const runtime_dir = "nubrightness/"
+const state_file = "state.nuon"
+
+def get_state_file_path [] {
+	let $dir = (
+		if $env.XDG_RUNTIME_DIR? != null {
+			$env.XDG_RUNTIME_DIR
+		} else {
+			$tmp_dir
+		}
+		| path join $runtime_dir
+	)
+
+	mkdir $dir
+
+	$dir | path join $state_file
+}
+
 export def brightness [
 	operation: string
 	value?
@@ -93,10 +112,25 @@ export def brightness [
 	--min (-m): int = 1	# Minimum below whcih the brightness will not be lowered
 	--device (-d): string	# Device name (can be a regex)
 	--class (-c): string	# Device class
+	--save			# Save previous state in a temporary file
 ] {
+	if $save { get_devices | save -f (get_state_file_path) }
+
 	match $operation {
 	"info" => { get_devices -d $device -c $class --first }
 	"list" => { get_devices -d $device -c $class }
+	"restore" => {
+		try {
+			open (get_state_file_path)
+		} catch {
+			error make { msg: "No saved state to restore" }
+		}
+		| each {|d|
+			set_brightness $d $d.brightness
+		}
+
+		null
+	}
 	"set" | "increase" | "decrease" => {
 		if $value == null {
 			let $span = (metadata $operation).span
