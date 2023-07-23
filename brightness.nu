@@ -1,10 +1,8 @@
-#!/usr/bin/nu
-
-const sys = "/sys/class/"
-const backlight = "/sys/class/backlight"
-const leds = "/sys/class/leds"
-const brightness = "brightness"
-const max_brightness = "max_brightness"
+def sys [] { "/sys/class/" }
+def backlight [] { "/sys/class/backlight" }
+def leds [] { "/sys/class/leds" }
+def brightness_name [] { "brightness" }
+def max_brightness_name [] { "max_brightness" }
 
 def get_devices [
 	--device (-d): string
@@ -12,8 +10,8 @@ def get_devices [
 	--first
 ] {
 	[]
-	| append (ls $backlight)
-	| append (ls $leds)
+	| append (ls (backlight))
+	| append (ls (leds))
 	| $in.name
 	| each {|device|
 		let $name = ($device | path basename)
@@ -43,31 +41,31 @@ def get_devices [
 }
 
 def get_brightness [device: path] {
-	open --raw ($device | path join $brightness) | into int
+	open --raw ($device | path join (brightness_name)) | into int
 }
 
 def get_max_brightness [device: path] {
-	open --raw ($device | path join $max_brightness) | into int
+	open --raw ($device | path join (max_brightness_name)) | into int
 }
 
 def set_brightness [device, value: int] {
 	let $value = ([$value $device.max_brightness] | math min)
 
 	let $path = (
-		$sys
+		sys
 		| path join $device.class
 		| path join $device.name
-		| path join $brightness
+		| path join (brightness_name)
 	)
 
 	$value | save $path --force
 }
 
-const value_regex = '(?P<num>[[:digit:]]*)(?P<percentage>%?)'
+def value_regex [] { '(?P<num>[[:digit:]]*)(?P<percentage>%?)' }
 
 def parse_value [value, span, device] {
 	let $value = (try {
-		$value | parse -r $value_regex | first | into int num
+		$value | parse -r (value_regex) | first | into int num
 	} catch {
 		error make {
 			msg: "Brightness value must be an integer with an optional '%' at the end"
@@ -85,34 +83,39 @@ def parse_value [value, span, device] {
 	} | math round
 }
 
-const tmp_dir = "/tmp/"
-const runtime_dir = "nubrightness/"
-const state_file = "state.nuon"
+def tmp_dir [] { "/tmp/" }
+def runtime_dir [] { "nubrightness/" }
+def state_file [] { "state.nuon" }
 
 def get_state_file_path [] {
 	let $dir = (
 		if $env.XDG_RUNTIME_DIR? != null {
 			$env.XDG_RUNTIME_DIR
 		} else {
-			$tmp_dir
+			(tmp_dir)
 		}
-		| path join $runtime_dir
+		| path join (runtime_dir)
 	)
 
 	mkdir $dir
 
-	$dir | path join $state_file
+	$dir | path join (state_file)
 }
 
-export def brightness [
-	operation: string
+def operation_comp [] {
+	["info", "list", "restore", "set", "increase", "decrease"]
+}
+def class_comp [] { ["backlight", "leds"] }
+
+export def main [
+	operation: string@operation_comp
 	value?
 
-	--quiet (-q)		# Suppress output
-	--min (-m): int = 1	# Minimum below whcih the brightness will not be lowered
-	--device (-d): string	# Device name (can be a regex)
-	--class (-c): string	# Device class
-	--save			# Save previous state in a temporary file
+	--quiet (-q)			# Suppress output
+	--min (-m): int = 1		# Minimum below whcih the brightness will not be lowered
+	--device (-d): string		# Device name (can be a regex)
+	--class (-c): string@class_comp	# Device class
+	--save				# Save previous state in a temporary file
 ] {
 	if $save { get_devices | save -f (get_state_file_path) }
 
@@ -161,6 +164,17 @@ export def brightness [
 
 		let $device = (get_devices -d $device.name -c $class --first)
 		if not $quiet { print $device }
+	}
+	_ => {
+		let span = (metadata $operation).span
+		error make {
+			msg: $"Operation \"($operation)\" not found"
+			label: {
+				text: "invalid subcommand",
+				start: $span.start,
+				end: $span.end,
+			}
+		}
 	}
 	}
 }
