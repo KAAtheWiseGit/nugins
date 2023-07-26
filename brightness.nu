@@ -112,7 +112,7 @@ export def main [
 	value?
 
 	--quiet (-q)			# Suppress output
-	--min (-m): int = 1		# Minimum below whcih the brightness will not be lowered
+	--min (-m): int = 1		# Minimum below which the brightness will not be lowered
 	--device (-d): string		# Device name (can be a regex)
 	--class (-c): string@class_comp	# Device class
 	--save				# Save previous state in a temporary file
