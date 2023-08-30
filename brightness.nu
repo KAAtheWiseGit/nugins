@@ -1,8 +1,8 @@
-def sys [] { "/sys/class/" }
-def backlight [] { "/sys/class/backlight" }
-def leds [] { "/sys/class/leds" }
-def brightness_name [] { "brightness" }
-def max_brightness_name [] { "max_brightness" }
+const sys = "/sys/class/"
+const backlight = "/sys/class/backlight"
+const leds = "/sys/class/leds"
+const brightness_name = "brightness"
+const max_brightness_name = "max_brightness"
 
 def get_devices [
 	--device (-d): string
@@ -10,8 +10,8 @@ def get_devices [
 	--first
 ] {
 	[]
-	| append (ls (backlight))
-	| append (ls (leds))
+	| append (ls $backlight)
+	| append (ls $leds)
 	| $in.name
 	| each {|device|
 		let $name = ($device | path basename)
@@ -41,31 +41,31 @@ def get_devices [
 }
 
 def get_brightness [device: path] {
-	open --raw ($device | path join (brightness_name)) | into int
+	open --raw ($device | path join $brightness_name) | into int
 }
 
 def get_max_brightness [device: path] {
-	open --raw ($device | path join (max_brightness_name)) | into int
+	open --raw ($device | path join $max_brightness_name) | into int
 }
 
 def set_brightness [device, value: int] {
 	let $value = ([$value $device.max_brightness] | math min)
 
 	let $path = (
-		sys
+		$sys
 		| path join $device.class
 		| path join $device.name
-		| path join (brightness_name)
+		| path join $brightness_name
 	)
 
 	$value | save $path --force
 }
 
-def value_regex [] { '(?P<num>[[:digit:]]*)(?P<percentage>%?)' }
+const value_regex = '(?P<num>[[:digit:]]*)(?P<percentage>%?)'
 
 def parse_value [value, span, device] {
 	let $value = (try {
-		$value | parse -r (value_regex) | first | into int num
+		$value | parse -r $value_regex | first | into int num
 	} catch {
 		error make {
 			msg: "Brightness value must be an integer with an optional '%' at the end"
@@ -83,23 +83,23 @@ def parse_value [value, span, device] {
 	} | math round
 }
 
-def tmp_dir [] { "/tmp/" }
-def runtime_dir [] { "nubrightness/" }
-def state_file [] { "state.nuon" }
+const tmp_dir = "/tmp/"
+const runtime_dir = "nubrightness/"
+const state_file = "state.nuon"
 
 def get_state_file_path [] {
 	let $dir = (
 		if $env.XDG_RUNTIME_DIR? != null {
 			$env.XDG_RUNTIME_DIR
 		} else {
-			(tmp_dir)
+			$tmp_dir
 		}
-		| path join (runtime_dir)
+		| path join $runtime_dir
 	)
 
 	mkdir $dir
 
-	$dir | path join (state_file)
+	$dir | path join $state_file
 }
 
 def operation_comp [] {
