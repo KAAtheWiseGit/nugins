@@ -12,6 +12,8 @@ export def main [
 		| to text
 		| str replace --all --multiline --regex ".age$" ""
 		| fzf
+		| if $in == "" { return } else { $in }
+		| str trim  # needed, because previous if adds a newline
 		| path expand
 		| {
 			parent: ($in | path dirname),
