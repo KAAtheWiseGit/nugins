@@ -10,8 +10,15 @@ export def main [
 		ls **/*.age
 		| each {|f| $f.name}
 		| to text
+		| str replace --all --multiline --regex ".age$" ""
 		| fzf
 		| path expand
+		| {
+			parent: ($in | path dirname),
+			stem: ($in | path basename),
+			extension: "age",
+		}
+		| path join
 	)
 
 	open $path
@@ -28,6 +35,7 @@ export def main [
 # Print a tree of all existing secrets
 export def tree [] {
 	^tree $env.NUPASS.REPOSITORY
+	| str replace --all --multiline --regex ".age$" ""
 }
 
 # Generate a new diceware password
