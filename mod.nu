@@ -5,7 +5,6 @@ export def main [
 	--force (-f)	# Print the secret into stdout instead of copying it
 ] {
 	cd $env.NUPASS.REPOSITORY
-	# this doesn't handle interrupts in fzf gracefully
 	let path = (
 		ls **/*.age
 		| each {|f| $f.name}
@@ -81,7 +80,7 @@ export def add [
 	check_secret_name_not_taken $path $force (metadata $name).span
 
 	let tmp = $"($path).tmp"
-	nvim tmp
+	^$env.EDITOR tmp
 	open tmp | encrypt | save $path --force
 	rm tmp
 
@@ -97,7 +96,7 @@ export def edit [
 
 	let tmp = $"($path).tmp"
 	open $path | decrypt | save $tmp
-	nvim $tmp
+	^$env.EDITOR $tmp
 	open $tmp | encrypt | save $path --force
 	rm $tmp
 
