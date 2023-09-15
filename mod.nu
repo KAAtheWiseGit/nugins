@@ -105,3 +105,21 @@ export def delete [
 	rm $path
 	git_commit $name "delete secret"
 }
+
+export def move [
+	old_name	# current name of the secret
+	new_name	# new secret name
+
+	--force (-f)	# overwrite
+] {
+	let old_path = (get_repo_abs_path $old_name)
+	let new_path = (get_repo_abs_path $new_name)
+
+	check_secret_name_exists $old_path (metadata $old_name).span
+	check_secret_name_not_taken $new_path $force (metadata $new_name).span
+
+	mkdir ($new_path | path dirname)
+	mv --force $old_path $new_path
+
+	git_commit $new_name $"rename from ($old_name)"
+}
