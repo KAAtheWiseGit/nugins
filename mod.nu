@@ -78,23 +78,29 @@ export def add [
 	git_commit $name "add secret"
 }
 
+export def edit [
+	name		# name of the new secret to edit
+] {
+	let path = (get_repo_abs_path $name)
+
+	check_secret_name_exists $path (metadata $name).span
+
+	let tmp = $"($path).tmp"
+	open $path | decrypt | save $tmp
+	nvim $tmp
+	open $tmp | encrypt | save $path --force
+	rm $tmp
+
+	git_commit $name "edit secret"
+}
+
 # Delete a secret
 export def delete [
 	name		# name of the secret
 ] {
 	let path = (get_repo_abs_path $name)
 
-	if not ($path | path exists) {
-		let $span = (metadata $name).span
-		error make {
-			msg: "Secret not found"
-			label: {
-				text: "a secret with this name doesn't exist"
-				start: $span.start
-				end: $span.end
-			}
-		}
-	}
+	check_secret_name_exists $path (metadata $name).span
 
 	rm $path
 	git_commit $name "delete secret"

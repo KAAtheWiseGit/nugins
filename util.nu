@@ -36,3 +36,16 @@ export def check_secret_name_not_taken [path, force, span] {
 		}
 	}
 }
+
+export def check_secret_name_exists [path, span] {
+	if not ($path | path exists) {
+		error make {
+			msg: "Secret not found"
+			label: {
+				text: "a secret with this name doesn't exist"
+				start: $span.start
+				end: $span.end
+			}
+		}
+	}
+}
