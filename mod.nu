@@ -49,17 +49,7 @@ export def generate [
 		| str join " "
 	)
 
-	if (($path | path exists) and (not $force)) {
-		let $span = (metadata $name).span
-		error make {
-			msg: "Secret with this name already exists"
-			label: {
-				text: "name already taken"
-				start: $span.start
-				end: $span.end
-			}
-		}
-	}
+	check_secret_name_not_taken $path $force (metadata $name).span
 
 	$passphrase
 	| encrypt
@@ -70,6 +60,22 @@ export def generate [
 	}
 
 	git_commit $name "generate secret"
+}
+
+export def add [
+	name		# name for the new secret
+
+	--force (-f)	# overwrite
+] {
+	let path = (get_repo_abs_path $name)
+	check_secret_name_not_taken $path $force (metadata $name).span
+
+	let tmp = $"($path).tmp"
+	nvim tmp
+	open tmp | encrypt | save $path --force
+	rm tmp
+
+	git_commit $name "add secret"
 }
 
 # Delete a secret

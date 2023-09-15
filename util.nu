@@ -23,3 +23,16 @@ export def git_commit [name, message] {
 	git commit -m $"($name): ($message)"
 	git push
 }
+
+export def check_secret_name_not_taken [path, force, span] {
+	if (($path | path exists) and (not $force)) {
+		error make {
+			msg: "Secret with this name already exists"
+			label: {
+				text: "name already taken"
+				start: $span.start
+				end: $span.end
+			}
+		}
+	}
+}
