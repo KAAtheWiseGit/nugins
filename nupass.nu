@@ -78,3 +78,28 @@ export def generate [
 	git commit -m $"($name): generate secret"
 	git push
 }
+
+# Delete a secret
+export def delete [
+	name		# name of the secret
+] {
+	cd $env.NUPASS_REPOSITORY
+
+	let path = $"($name).age"
+	if not ($path | path exists) {
+		let $span = (metadata $name).span
+		error make {
+			msg: "Secret not found"
+			label: {
+				text: "a secret with this name doesn't exist"
+				start: $span.start
+				end: $span.end
+			}
+		}
+	}
+
+	rm $path
+	git add $path
+	git commit -m $"($name): delete secret"
+	git push
+}
