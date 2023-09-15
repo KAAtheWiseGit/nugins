@@ -1,21 +1,25 @@
+use util *
+
 # Get a secret and copy it to the clipboard
 export def main [
 	--force (-f)	# Print the secret into stdout instead of copying it
 ] {
-	cd ~
-	cd $env.NUPASS_REPOSITORY
+	cd $env.NUPASS.REPOSITORY
 	# this doesn't handle interrupts in fzf gracefully
-	let path = (ls **/*.age | each {|f| $f.name} | to text | fzf)
-	# get absolute path to the encrypted file
-	let path = ($path | path expand)
+	let path = (
+		ls **/*.age
+		| each {|f| $f.name}
+		| to text
+		| fzf
+		| path expand
+	)
 
-	cd ~
-	let secret = (age -d -i $env.NUPASS_IDENTITY $path)
-	if $force {
-		print $secret
+	open $path
+	| decrypt
+	| if $force {
+		print
 	} else {
-		$secret
-		| split row "\n"
+		split row "\n"
 		| first
 		| wl-copy --trim-newline
 	}
@@ -23,9 +27,7 @@ export def main [
 
 # Print a tree of all existing secrets
 export def tree [] {
-	cd ~
-	cd $env.NUPASS_REPOSITORY
-	^tree .
+	^tree $env.NUPASS.REPOSITORY
 }
 
 # Generate a new diceware password
@@ -35,10 +37,9 @@ export def generate [
 
 	--force (-f)	# overwrite
 ] {
-	let path = $"($name).age"
-	cd ~
+	let path = (get_repo_abs_path $name)
 
-	let $wordlist = (open $env.NUPASS_WORDLIST | lines)
+	let $wordlist = (open $env.NUPASS.WORDLIST | lines)
 	let $passphrase = (
 		1..($num)
 		| each {||
@@ -47,13 +48,6 @@ export def generate [
 		}
 		| str join " "
 	)
-
-	let $enc_secret = (
-		$passphrase
-		| age --armor --recipients-file $env.NUPASS_RECIPIENTS
-	)
-
-	cd $env.NUPASS_REPOSITORY
 
 	if (($path | path exists) and (not $force)) {
 		let $span = (metadata $name).span
@@ -67,25 +61,23 @@ export def generate [
 		}
 	}
 
-	$enc_secret
+	$passphrase
+	| encrypt
 	| if $force {
 		save --force $path
 	} else {
 		save $path
 	}
 
-	git add $path
-	git commit -m $"($name): generate secret"
-	git push
+	git_commit $name "generate secret"
 }
 
 # Delete a secret
 export def delete [
 	name		# name of the secret
 ] {
-	cd $env.NUPASS_REPOSITORY
+	let path = (get_repo_abs_path $name)
 
-	let path = $"($name).age"
 	if not ($path | path exists) {
 		let $span = (metadata $name).span
 		error make {
@@ -99,7 +91,5 @@ export def delete [
 	}
 
 	rm $path
-	git add $path
-	git commit -m $"($name): delete secret"
-	git push
+	git_commit $name "delete secret"
 }
