@@ -21,7 +21,7 @@ export def main [
 	}
 }
 
-#
+# Print a tree of all existing secrets
 export def tree [] {
 	cd ~
 	cd $env.NUPASS_REPOSITORY
