@@ -22,6 +22,12 @@ export def main [
 		| path join
 	)
 
+	print $"Getting (ansi yellow)(
+		$path
+		| path relative-to $env.NUPASS.REPOSITORY
+		| str replace --regex ".age$" ""
+	)(ansi reset)"
+
 	open $path
 	| decrypt
 	| if $force {
