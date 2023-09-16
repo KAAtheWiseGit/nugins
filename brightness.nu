@@ -115,7 +115,7 @@ export def main [
 	--min (-m): int = 1		# Minimum below which the brightness will not be lowered
 	--device (-d): string		# Device name (can be a regex)
 	--class (-c): string@class_comp	# Device class
-	--save				# Save previous state in a temporary file
+	--save (-s)			# Save previous state in a temporary file
 ] {
 	if $save { get_devices | save -f (get_state_file_path) }
 
