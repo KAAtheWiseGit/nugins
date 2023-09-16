@@ -1,8 +1,8 @@
 use util *
 
-# Get a secret and copy it to the clipboard
+# Select a secret using `fzf` and copy it to the clipboard.
 export def main [
-	--force (-f)	# Print the secret into stdout instead of copying it
+	--force (-f)	# Print the secret instead of copying it
 ] {
 	cd $env.NUPASS.REPOSITORY
 	let path = (
@@ -33,18 +33,18 @@ export def main [
 	}
 }
 
-# Print a tree of all existing secrets
+# Print a tree of all existing secrets.
 export def tree [] {
 	^tree $env.NUPASS.REPOSITORY
 	| str replace --all --multiline --regex ".age$" ""
 }
 
-# Generate a new diceware password
+# Generate a new diceware password.
 export def generate [
-	name		# name for the new secret
-	num: int	# number of words in the passphrase
+	name		# Name for the new secret
+	num: int	# Number of words in the passphrase
 
-	--force (-f)	# overwrite
+	--force (-f)	# If another secret exists at {name}, overwrite it
 ] {
 	let path = (get_repo_abs_path $name)
 
@@ -71,10 +71,11 @@ export def generate [
 	git_commit $name "generate secret"
 }
 
+# Add a secret using $EDITOR.
 export def add [
-	name		# name for the new secret
+	name		# Name for the new secret
 
-	--force (-f)	# overwrite
+	--force (-f)	# If another secret exists at {name}, overwrite it
 ] {
 	let path = (get_repo_abs_path $name)
 	check_secret_name_not_taken $path $force (metadata $name).span
@@ -87,8 +88,9 @@ export def add [
 	git_commit $name "add secret"
 }
 
+# Edit a secret using $EDITOR.
 export def edit [
-	name		# name of the new secret to edit
+	name		# Name of the secret to edit
 ] {
 	let path = (get_repo_abs_path $name)
 
@@ -103,9 +105,9 @@ export def edit [
 	git_commit $name "edit secret"
 }
 
-# Delete a secret
+# Delete a secret.
 export def delete [
-	name		# name of the secret
+	name		# Name of the secret
 ] {
 	let path = (get_repo_abs_path $name)
 
@@ -115,11 +117,12 @@ export def delete [
 	git_commit $name "delete secret"
 }
 
+# Move an existing secret to another path.
 export def move [
-	old_name	# current name of the secret
-	new_name	# new secret name
+	old_name	# Current name of the secret
+	new_name	# New name for the secret
 
-	--force (-f)	# overwrite
+	--force (-f)	# If another secret exists at {new_name}, overwrite it
 ] {
 	let old_path = (get_repo_abs_path $old_name)
 	let new_path = (get_repo_abs_path $new_name)
