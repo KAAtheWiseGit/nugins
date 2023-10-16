@@ -7,12 +7,9 @@ export def main [
 	cd $env.NUPASS.REPOSITORY
 	let path = (
 		ls **/*.age
-		| each {|f| $f.name}
-		| to text
-		| str replace --all --multiline --regex ".age$" ""
-		| fzf
-		| if $in == "" { return } else { $in }
-		| str trim  # needed, because previous if adds a newline
+		| $in.name
+		| each {|f| str replace --regex ".age$" "" }
+		| input list --fuzzy
 		| path expand
 		| {
 			parent: ($in | path dirname),
