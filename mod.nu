@@ -6,9 +6,7 @@ export def main [
 ] {
 	cd $env.NUPASS.REPOSITORY
 	let path = (
-		ls **/*.age
-		| $in.name
-		| each {|f| str replace --regex ".age$" "" }
+		| get_names
 		| input list --fuzzy
 		| path expand
 		| {
@@ -44,8 +42,8 @@ export def tree [] {
 
 # Generate a new diceware password.
 export def generate [
-	name		# Name for the new secret
-	num: int	# Number of words in the passphrase
+	name: string@get_names	# Name for the new secret
+	num: int		# Number of words in the passphrase
 
 	--force (-f)	# If another secret exists at <name>, overwrite it
 ] {
@@ -76,7 +74,7 @@ export def generate [
 
 # Add a secret using $EDITOR.
 export def add [
-	name		# Name for the new secret
+	name: string@get_names	# Name for the new secret
 
 	--force (-f)	# If another secret exists at <name>, overwrite it
 ] {
@@ -93,7 +91,7 @@ export def add [
 
 # Edit a secret using $EDITOR.
 export def edit [
-	name		# Name of the secret to edit
+	name: string@get_names	# Name of the secret to edit
 ] {
 	let path = (get_repo_abs_path $name)
 
@@ -110,7 +108,7 @@ export def edit [
 
 # Delete a secret.
 export def delete [
-	name		# Name of the secret
+	name: string@get_names	# Name of the secret
 ] {
 	let path = (get_repo_abs_path $name)
 
@@ -122,8 +120,8 @@ export def delete [
 
 # Move an existing secret to another path.
 export def move [
-	old_name	# Current name of the secret
-	new_name	# New name for the secret
+	old_name: string@get_names	# Current name of the secret
+	new_name			# New name for the secret
 
 	--force (-f)	# If another secret exists at <new_name>, overwrite it
 ] {

@@ -49,3 +49,10 @@ export def check_secret_name_exists [path, span] {
 		}
 	}
 }
+
+export def get_names [] {
+	cd $env.NUPASS.REPOSITORY
+	ls **/*.age
+	| $in.name
+	| each {|f| str replace --regex ".age$" "" }
+}
