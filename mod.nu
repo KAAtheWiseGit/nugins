@@ -1,8 +1,8 @@
 use util *
 
-# Select a secret using `fzf` and copy it to the clipboard.
+# Select a secret using fuzzy search and copy it to the clipboard.
 export def main [
-	--force (-f)	# Print the secret instead of copying it
+	--force (-f)	# Print the secret to the output instead of copying it
 ] {
 	cd $env.NUPASS.REPOSITORY
 	let path = (
@@ -47,7 +47,7 @@ export def generate [
 	name		# Name for the new secret
 	num: int	# Number of words in the passphrase
 
-	--force (-f)	# If another secret exists at {name}, overwrite it
+	--force (-f)	# If another secret exists at <name>, overwrite it
 ] {
 	let path = (get_repo_abs_path $name)
 
@@ -78,7 +78,7 @@ export def generate [
 export def add [
 	name		# Name for the new secret
 
-	--force (-f)	# If another secret exists at {name}, overwrite it
+	--force (-f)	# If another secret exists at <name>, overwrite it
 ] {
 	let path = (get_repo_abs_path $name)
 	check_secret_name_not_taken $path $force (metadata $name).span
@@ -125,7 +125,7 @@ export def move [
 	old_name	# Current name of the secret
 	new_name	# New name for the secret
 
-	--force (-f)	# If another secret exists at {new_name}, overwrite it
+	--force (-f)	# If another secret exists at <new_name>, overwrite it
 ] {
 	let old_path = (get_repo_abs_path $old_name)
 	let new_path = (get_repo_abs_path $new_name)
