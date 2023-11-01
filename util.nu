@@ -56,3 +56,18 @@ export def get_names [] {
 	| $in.name
 	| each {|f| str replace --regex ".age$" "" }
 }
+
+export def to_filepath [
+	path: path
+] {
+	cd $env.NUPASS.REPOSITORY
+
+	$path
+	| path expand
+	| {
+		parent: ($in | path dirname),
+		stem: ($in | path basename),
+		extension: "age",
+	}
+	| path join
+}

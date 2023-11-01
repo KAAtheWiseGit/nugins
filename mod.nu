@@ -5,17 +5,14 @@ export def main [
 	--force (-f)	# Print the secret to the output instead of copying it
 ] {
 	cd $env.NUPASS.REPOSITORY
-	let path = (
-		| get_names
-		| input list --fuzzy
-		| path expand
-		| {
-			parent: ($in | path dirname),
-			stem: ($in | path basename),
-			extension: "age",
-		}
-		| path join
-	)
+
+	# try guards against interrupts
+	let selection = try { get_names | input list --fuzzy }
+	if $selection == "" {
+		print "No secret selected"
+		return
+	}
+	let path = to_filepath $selection
 
 	print $"Getting (ansi yellow)(
 		$path
