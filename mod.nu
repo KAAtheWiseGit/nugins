@@ -59,7 +59,6 @@ export def generate [
 	check_secret_name_not_taken $path $force (metadata $name).span
 
 	mkdir ($path | path dirname)
-
 	$passphrase
 	| encrypt
 	| if $force {
@@ -81,8 +80,10 @@ export def add [
 	check_secret_name_not_taken $path $force (metadata $name).span
 
 	let tmp = $"($path).tmp"
+	mkdir ($path | path dirname)
 	^$env.EDITOR tmp
 	open tmp | encrypt | save $path --force
+
 	rm tmp
 
 	git_commit $name "add secret"
@@ -97,6 +98,7 @@ export def edit [
 	check_secret_name_exists $path (metadata $name).span
 
 	let tmp = $"($path).tmp"
+	mkdir ($path | path dirname)
 	open $path | decrypt | save $tmp
 	^$env.EDITOR $tmp
 	open $tmp | encrypt | save $path --force
