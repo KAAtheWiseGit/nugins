@@ -50,13 +50,15 @@ export def generate [
 	let $passphrase = (
 		1..($num)
 		| each {||
-			let i = random integer 1..($wordlist | length)
+			let i = random int 1..($wordlist | length)
 			$wordlist | get ($i - 1)
 		}
 		| str join " "
 	)
 
 	check_secret_name_not_taken $path $force (metadata $name).span
+
+	mkdir ($path | path dirname)
 
 	$passphrase
 	| encrypt
