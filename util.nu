@@ -30,8 +30,7 @@ export def check_secret_name_not_taken [path, force, span] {
 			msg: "Secret with this name already exists"
 			label: {
 				text: "name already taken"
-				start: $span.start
-				end: $span.end
+				span: $span
 			}
 		}
 	}
@@ -43,8 +42,7 @@ export def check_secret_name_exists [path, span] {
 			msg: "Secret not found"
 			label: {
 				text: "a secret with this name doesn't exist"
-				start: $span.start
-				end: $span.end
+				span: $span
 			}
 		}
 	}
