@@ -102,19 +102,31 @@ def get_state_file_path [] {
 	$dir | path join $state_file
 }
 
-def operation_comp [] {
-	["info", "list", "restore", "set", "increase", "decrease"]
+def operations [] {
+	[
+		{value: "info" description: "Information about current device"}
+		{value: "list" description: "List information about all devices"}
+		{value: "restore" description: "Restore saved configuration"}
+		{value: "set" description: "Set device's brightness"}
+		{value: "increase" description: "Increase brightness"}
+		{value: "decrease" description: "Decrease brightness"}
+	]
 }
-def class_comp [] { ["backlight", "leds"] }
+
+def classes [] { ["backlight", "leds"] }
+
+def devices [] {
+	get_devices | get name
+}
 
 export def main [
-	operation: string@operation_comp
+	operation: string@operations
 	value?
 
 	--quiet (-q)			# Suppress output
 	--min (-m): int = 1		# Minimum below which the brightness will not be lowered
-	--device (-d): string		# Device name (can be a regex)
-	--class (-c): string@class_comp	# Device class
+	--device (-d): string@devices	# Device name (can be a regex)
+	--class (-c): string@classes	# Device class
 	--save (-s)			# Save previous state in a temporary file
 ] {
 	if $save { get_devices | save -f (get_state_file_path) }
