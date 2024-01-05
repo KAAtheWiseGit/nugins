@@ -119,9 +119,13 @@ def devices [] {
 	get_devices | get name
 }
 
+# A suit of commands to manipulate brightness on Linux.
+#
+# (value) can be an absolute value as an integer, or a percentage value as a
+# string the format of 'xx%'.
 export def main [
-	operation: string@operations
-	value?
+	operation: string@operations	# Subcommand to execute
+	value?				# Brightness value
 
 	--quiet (-q)			# Suppress output
 	--min (-m): int = 1		# Minimum below which the brightness will not be lowered
