@@ -1,5 +1,10 @@
 export def decrypt [] {
-	age --decrypt --identity $env.NUPASS.IDENTITY
+	let output = age --decrypt --identity $env.NUPASS.IDENTITY | complete
+	if $output.exit_code != 0 {
+		error make --unspanned { msg: "Failed to decrypt the secret" }
+	} else {
+		return $output.stdout
+	}
 }
 
 export def encrypt [] {
