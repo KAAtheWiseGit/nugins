@@ -1,4 +1,4 @@
-use util *
+use util.nu *
 
 # Select a secret using fuzzy search and copy it to the clipboard.
 export def main [
@@ -97,12 +97,13 @@ export def edit [
 
 	check_secret_name_exists $path (metadata $name).span
 
-	let tmp = $"($path).tmp"
+	let tmp = mktemp --tmpdir "nupass.XXXXXX"
+
 	mkdir ($path | path dirname)
-	open $path | decrypt | save $tmp
+	open $path | decrypt | save --force $tmp
 	^$env.EDITOR $tmp
-	open $tmp | encrypt | save $path --force
-	rm $tmp
+	open $tmp | encrypt | save --force $path
+	rm --permanent $tmp
 
 	git_commit $name "edit secret"
 }
