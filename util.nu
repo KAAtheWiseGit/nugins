@@ -63,7 +63,7 @@ export def secrets [] {
 export def "into filepath" [] {
 	[$env.NUPASS.REPOSITORY $in]
 	| path join
-	| path parse
+	| path parse --extension ""
 	| upsert extension "age"
 	| path join
 }
