@@ -7,7 +7,7 @@ export def main [
 	cd $env.NUPASS.REPOSITORY
 
 	let selection = select secret
-	let path = to_filepath $selection
+	let path = $selection | into filepath
 
 	print $"Getting (ansi yellow)(
 		$path
