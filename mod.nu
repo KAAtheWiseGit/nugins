@@ -39,7 +39,7 @@ export def generate [
 
 	--force (-f)	# If another secret exists at <name>, overwrite it
 ] {
-	let path = (get_repo_abs_path $name)
+	let path = $name | into filepath
 
 	let $wordlist = (open $env.NUPASS.WORDLIST | lines)
 	let $passphrase = (
@@ -71,7 +71,7 @@ export def add [
 
 	--force (-f)	# If another secret exists at <name>, overwrite it
 ] {
-	let path = (get_repo_abs_path $name)
+	let path = $name | into filepath
 	check_secret_name_not_taken $path $force (metadata $name).span
 
 	let tmp = $"($path).tmp"
@@ -88,7 +88,7 @@ export def add [
 export def edit [
 	name: string@get_names	# Name of the secret to edit
 ] {
-	let path = (get_repo_abs_path $name)
+	let path = $name | into filepath
 
 	check_secret_name_exists $path (metadata $name).span
 
@@ -107,7 +107,7 @@ export def edit [
 export def delete [
 	name: string@get_names	# Name of the secret
 ] {
-	let path = (get_repo_abs_path $name)
+	let path = $name | into filepath
 
 	check_secret_name_exists $path (metadata $name).span
 
@@ -122,8 +122,8 @@ export def move [
 
 	--force (-f)	# If another secret exists at <new_name>, overwrite it
 ] {
-	let old_path = (get_repo_abs_path $old_name)
-	let new_path = (get_repo_abs_path $new_name)
+	let old_path = $old_name | into filepath
+	let new_path = $new_name | into filepath
 
 	check_secret_name_exists $old_path (metadata $old_name).span
 	check_secret_name_not_taken $new_path $force (metadata $new_name).span

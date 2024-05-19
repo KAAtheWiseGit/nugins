@@ -63,11 +63,8 @@ export def get_names [] {
 export def "into filepath" [] {
 	[$env.NUPASS.REPOSITORY $in]
 	| path join
-	| {
-		parent: ($in | path dirname),
-		stem: ($in | path basename),
-		extension: "age",
-	}
+	| path parse
+	| upsert extension "age"
 	| path join
 }
 
