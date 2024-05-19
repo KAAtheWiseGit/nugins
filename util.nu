@@ -74,3 +74,14 @@ export def to_filepath [
 	}
 	| path join
 }
+
+export def "select secret" [] {
+	# try guards against interrupts
+	let selection = try { get_names | input list --fuzzy }
+
+	if $selection == null {
+		error make --unspanned { msg: "No secret selected" }
+	}
+
+	$selection
+}

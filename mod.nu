@@ -6,12 +6,7 @@ export def main [
 ] {
 	cd $env.NUPASS.REPOSITORY
 
-	# try guards against interrupts
-	let selection = try { get_names | input list --fuzzy }
-	if $selection == "" {
-		print "No secret selected"
-		return
-	}
+	let selection = select secret
 	let path = to_filepath $selection
 
 	print $"Getting (ansi yellow)(
