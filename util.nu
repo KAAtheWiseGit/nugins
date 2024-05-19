@@ -53,7 +53,7 @@ export def check_secret_name_exists [path, span] {
 	}
 }
 
-export def get_names [] {
+export def secrets [] {
 	cd $env.NUPASS.REPOSITORY
 	ls **/*.age
 	| $in.name
@@ -70,7 +70,7 @@ export def "into filepath" [] {
 
 export def "select secret" [] {
 	# try guards against interrupts
-	let selection = try { get_names | input list --fuzzy }
+	let selection = try { secrets | input list --fuzzy }
 
 	if $selection == null {
 		error make --unspanned { msg: "No secret selected" }

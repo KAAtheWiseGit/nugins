@@ -34,7 +34,7 @@ export def tree [] {
 
 # Generate a new diceware password.
 export def generate [
-	name: string@get_names	# Name for the new secret
+	name: string@secrets	# Name for the new secret
 	num: int		# Number of words in the passphrase
 
 	--force (-f)	# If another secret exists at <name>, overwrite it
@@ -67,7 +67,7 @@ export def generate [
 
 # Add a secret using $EDITOR.
 export def add [
-	name: string@get_names	# Name for the new secret
+	name: string@secrets	# Name for the new secret
 
 	--force (-f)	# If another secret exists at <name>, overwrite it
 ] {
@@ -86,7 +86,7 @@ export def add [
 
 # Edit a secret using $EDITOR.
 export def edit [
-	name: string@get_names	# Name of the secret to edit
+	name: string@secrets	# Name of the secret to edit
 ] {
 	let path = $name | into filepath
 
@@ -105,7 +105,7 @@ export def edit [
 
 # Delete a secret.
 export def delete [
-	name: string@get_names	# Name of the secret
+	name: string@secrets	# Name of the secret
 ] {
 	let path = $name | into filepath
 
@@ -117,7 +117,7 @@ export def delete [
 
 # Move an existing secret to another path.
 export def move [
-	old_name: string@get_names	# Current name of the secret
+	old_name: string@secrets	# Current name of the secret
 	new_name			# New name for the secret
 
 	--force (-f)	# If another secret exists at <new_name>, overwrite it
