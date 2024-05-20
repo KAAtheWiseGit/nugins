@@ -2,7 +2,8 @@ use util.nu *
 
 # Select a secret using fuzzy search and copy it to the clipboard.
 export def main [
-	--force (-f)	# Print the secret to the output instead of copying it
+	--print (-p)	# Print the secret instead of copying it
+	--output (-o)	# Pipe the secret to the stdout
 ] {
 	cd $env.NUPASS.REPOSITORY
 
@@ -17,8 +18,12 @@ export def main [
 
 	open $path
 	| decrypt
-	| if $force {
+	| if $print {
 		print
+	} else if $output {
+		split row "\n"
+		| first
+		| str trim
 	} else {
 		split row "\n"
 		| first
