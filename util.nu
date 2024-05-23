@@ -11,20 +11,22 @@ export def encrypt [] {
 	age --encrypt --armor --recipients-file $env.NUPASS.RECIPIENTS
 }
 
-export def get_repo_abs_path [name] {
-	{
-		parent: $env.NUPASS.REPOSITORY,
-		stem: $name,
-		extension: "age"
-	} | path join
-}
+export def git_commit [
+	name: string,
+	message: string,
 
-export def git_commit [name, message] {
-	let path = (get_repo_abs_path $name)
+	--rm,
+] {
+	let path = $name | into filepath
 
 	cd $env.NUPASS.REPOSITORY
 
-	git add $path
+	if $rm {
+		git rm $path
+	} else {
+		git add $path
+	}
+
 	git commit -m $"($name): ($message)"
 	git push
 }

@@ -116,8 +116,7 @@ export def delete [
 
 	check_secret_name_exists $path (metadata $name).span
 
-	rm $path
-	git_commit $name "delete secret"
+	git_commit --rm $name "delete secret"
 }
 
 # Move an existing secret to another path.
