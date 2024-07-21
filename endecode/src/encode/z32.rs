@@ -16,7 +16,7 @@ impl PluginCommand for Z32 {
 	}
 
 	fn usage(&self) -> &str {
-		"Encode a string or binary value the Z32 encoding."
+		"Encode a string or binary value with the z-base-32 encoding."
 	}
 
 	fn signature(&self) -> Signature {
