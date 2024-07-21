@@ -18,6 +18,12 @@ impl Plugin for EndecodePlugin {
 			Box::new(crate::encode::Crockford),
 			Box::new(crate::encode::Z32),
 			Box::new(crate::encode::Z85),
+			Box::new(crate::decode::Base32),
+			Box::new(crate::decode::Base32Hex),
+			Box::new(crate::decode::Base58),
+			Box::new(crate::decode::Crockford),
+			Box::new(crate::decode::Z32),
+			Box::new(crate::decode::Z85),
 		]
 	}
 }
