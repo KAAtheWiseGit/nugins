@@ -1,0 +1,12 @@
+[package]
+name = "nu_plugin_endecode"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+base32 = "0.5.1"
+base62 = "2.0.2"
+bs58 = { version = "0.5.1", features = ["alloc"] }
+nu-plugin = "0.95.0"
+nu-protocol = { version = "0.95.0", features = ["plugin"] }
+z85 = "3.0.5"
