@@ -19,6 +19,8 @@ This plugin provides the following ones:
 
 - Base58, mostly used by cryptocurrencies.
 
+- HTML entities escaping.
+
 See `help encode` for the command names.
 
 
