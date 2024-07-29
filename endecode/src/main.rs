@@ -3,8 +3,8 @@ use nu_plugin::{serve_plugin, MsgPackSerializer, Plugin, PluginCommand};
 mod decode;
 mod encode;
 
-mod util;
 mod command;
+mod util;
 
 pub struct EndecodePlugin;
 
@@ -27,6 +27,8 @@ impl Plugin for EndecodePlugin {
 			Box::new(crate::decode::Crockford),
 			Box::new(crate::decode::Z32),
 			Box::new(crate::decode::Z85),
+			Box::new(command::HtmlDecode),
+			Box::new(command::HtmlEncode),
 		]
 	}
 }
