@@ -3,6 +3,8 @@ use nu_plugin::{serve_plugin, MsgPackSerializer, Plugin, PluginCommand};
 mod decode;
 mod encode;
 
+mod util;
+
 pub struct EndecodePlugin;
 
 impl Plugin for EndecodePlugin {

@@ -36,7 +36,7 @@ impl PluginCommand for Base32Hex {
 		call: &EvaluatedCall,
 		input: PipelineData,
 	) -> Result<PipelineData, LabeledError> {
-		let (string, span) = super::string(input, call.head)?;
+		let (string, span) = crate::util::get_string(input, call.head)?;
 
 		let alphabet = if call.has_flag("lower")? {
 			Alphabet::Rfc4648HexLower {

@@ -35,7 +35,7 @@ impl PluginCommand for Base58 {
 		call: &EvaluatedCall,
 		input: PipelineData,
 	) -> Result<PipelineData, LabeledError> {
-		let (string, span) = super::string(input, call.head)?;
+		let (string, span) = crate::util::get_string(input, call.head)?;
 
 		let alphabet = match call.req::<String>(0)?.as_str() {
 			"bitcoin" => Alphabet::BITCOIN,

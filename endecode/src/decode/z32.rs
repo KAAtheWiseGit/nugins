@@ -34,7 +34,7 @@ impl PluginCommand for Z32 {
 		call: &EvaluatedCall,
 		input: PipelineData,
 	) -> Result<PipelineData, LabeledError> {
-		let (string, span) = super::string(input, call.head)?;
+		let (string, span) = crate::util::get_string(input, call.head)?;
 
 		match decode(Alphabet::Z, &string) {
 			Some(out) => Ok(Value::binary(out, call.head)

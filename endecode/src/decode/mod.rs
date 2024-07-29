@@ -1,6 +1,4 @@
-use nu_protocol::{
-	Category, LabeledError, PipelineData, Signature, Span, Type, Value,
-};
+use nu_protocol::{Category, Signature, Type};
 
 mod base32;
 mod base32hex;
@@ -20,28 +18,4 @@ pub fn signature(name: &str) -> Signature {
 	Signature::build(name)
 		.input_output_types(vec![(Type::String, Type::Binary)])
 		.category(Category::Formats)
-}
-
-pub fn string(
-	input: PipelineData,
-	head_span: Span,
-) -> Result<(String, Span), LabeledError> {
-	match input {
-		PipelineData::Value(value, ..) => {
-			let span = value.span();
-			match value {
-				Value::String { val, .. } => Ok((val, span)),
-				_ => {
-					unreachable!("type signature");
-				}
-			}
-		}
-		PipelineData::Empty => Err(LabeledError::new(
-			"The command requires string input",
-		)
-		.with_label("No input was passed to the command", head_span)),
-		_ => {
-			unreachable!("type signature");
-		}
-	}
 }

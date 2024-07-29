@@ -36,7 +36,7 @@ impl PluginCommand for Base32Hex {
 		call: &EvaluatedCall,
 		input: PipelineData,
 	) -> Result<PipelineData, LabeledError> {
-		let (bytes, _) = super::bytes(input, call.head)?;
+		let (bytes, _) = crate::util::get_bytes(input, call.head)?;
 		let alphabet = if call.has_flag("lower")? {
 			Alphabet::Rfc4648HexLower {
 				padding: call.has_flag("nopad")?,

@@ -35,7 +35,7 @@ impl PluginCommand for Base58 {
 		call: &EvaluatedCall,
 		input: PipelineData,
 	) -> Result<PipelineData, LabeledError> {
-		let (bytes, _) = super::bytes(input, call.head)?;
+		let (bytes, _) = crate::util::get_bytes(input, call.head)?;
 		let alphabet = match call.req::<String>(0)?.as_str() {
 			"bitcoin" => Alphabet::BITCOIN,
 			"monero" => Alphabet::MONERO,

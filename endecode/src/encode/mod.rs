@@ -1,6 +1,4 @@
-use nu_protocol::{
-	Category, LabeledError, PipelineData, Signature, Span, Type, Value,
-};
+use nu_protocol::{Category, Signature, Type};
 
 mod base32;
 mod base32hex;
@@ -23,37 +21,4 @@ pub fn signature(name: &str) -> Signature {
 			(Type::String, Type::String),
 		])
 		.category(Category::Formats)
-}
-
-pub fn bytes(
-	input: PipelineData,
-	head_span: Span,
-) -> Result<(Vec<u8>, Span), LabeledError> {
-	let input_span = input.span().unwrap_or(Span::unknown());
-	match input {
-		PipelineData::Value(value, ..) => {
-			let span = value.span();
-			match value {
-				Value::String { val, .. } => {
-					Ok((val.into_bytes(), span))
-				}
-				Value::Binary { val, .. } => Ok((val, span)),
-				_ => {
-					unreachable!(
-						"Other types are forbidden"
-					);
-				}
-			}
-		}
-		PipelineData::ByteStream(stream, ..) => {
-			Ok((stream.into_bytes()?, input_span))
-		}
-		PipelineData::Empty => Err(LabeledError::new(
-			"The command requires string or binary input",
-		)
-		.with_label("No input was passed to the command", head_span)),
-		_ => {
-			unreachable!("Other types are forbidden");
-		}
-	}
 }

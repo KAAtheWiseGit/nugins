@@ -34,7 +34,7 @@ impl PluginCommand for Z85 {
 		call: &EvaluatedCall,
 		input: PipelineData,
 	) -> Result<PipelineData, LabeledError> {
-		let (bytes, _) = super::bytes(input, call.head)?;
+		let (bytes, _) = crate::util::get_bytes(input, call.head)?;
 		let out = encode(&bytes);
 		Ok(Value::string(out, call.head).into_pipeline_data())
 	}
