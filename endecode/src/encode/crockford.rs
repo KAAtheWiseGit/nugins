@@ -20,7 +20,7 @@ impl PluginCommand for Crockford {
 	}
 
 	fn signature(&self) -> Signature {
-		super::signature(self.name())
+		crate::util::encode_signature(self.name())
 	}
 
 	fn search_terms(&self) -> Vec<&str> {

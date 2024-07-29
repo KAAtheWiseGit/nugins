@@ -20,7 +20,7 @@ impl PluginCommand for Base32 {
 	}
 
 	fn signature(&self) -> Signature {
-		super::signature(self.name())
+		crate::util::decode_signature(self.name())
 			.switch("nopad", "Don't pad the output", None)
 			.switch("lower", "Use lowercase letters", None)
 	}
@@ -52,10 +52,7 @@ impl PluginCommand for Base32 {
 			Some(out) => Ok(Value::binary(out, call.head)
 				.into_pipeline_data()),
 			None => Err(LabeledError::new("Decoding error")
-				.with_label(
-					"Not a valid Base32 string",
-					span,
-				)),
+				.with_label("Not a valid Base32 string", span)),
 		}
 	}
 }

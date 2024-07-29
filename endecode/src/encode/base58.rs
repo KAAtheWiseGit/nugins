@@ -21,7 +21,7 @@ impl PluginCommand for Base58 {
 	}
 
 	fn signature(&self) -> Signature {
-		super::signature(self.name()).required("alphabet", SyntaxShape::String, "Alphabet to use: can be 'bitcoin', 'monero', 'ripple', or 'flickr'")
+		crate::util::encode_signature(self.name()).required("alphabet", SyntaxShape::String, "Alphabet to use: can be 'bitcoin', 'monero', 'ripple', or 'flickr'")
 	}
 
 	fn search_terms(&self) -> Vec<&str> {

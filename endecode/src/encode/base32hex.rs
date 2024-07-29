@@ -20,7 +20,7 @@ impl PluginCommand for Base32Hex {
 	}
 
 	fn signature(&self) -> Signature {
-		super::signature(self.name())
+		crate::util::encode_signature(self.name())
 			.switch("nopad", "Don't pad the output", None)
 			.switch("lower", "Use lowercase letters", None)
 	}

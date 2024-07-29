@@ -1,4 +1,21 @@
-use nu_protocol::{LabeledError, PipelineData, Span, Value};
+use nu_protocol::{
+	Category, LabeledError, PipelineData, Signature, Span, Type, Value,
+};
+
+pub fn decode_signature(name: &str) -> Signature {
+	Signature::build(name)
+		.input_output_types(vec![(Type::String, Type::Binary)])
+		.category(Category::Formats)
+}
+
+pub fn encode_signature(name: &str) -> Signature {
+	Signature::build(name)
+		.input_output_types(vec![
+			(Type::Binary, Type::String),
+			(Type::String, Type::String),
+		])
+		.category(Category::Formats)
+}
 
 pub fn get_string(
 	input: PipelineData,

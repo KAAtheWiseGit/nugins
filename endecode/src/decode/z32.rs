@@ -20,7 +20,7 @@ impl PluginCommand for Z32 {
 	}
 
 	fn signature(&self) -> Signature {
-		super::signature(self.name())
+		crate::util::decode_signature(self.name())
 	}
 
 	fn search_terms(&self) -> Vec<&str> {
