@@ -4,6 +4,7 @@ mod decode;
 mod encode;
 
 mod util;
+mod command;
 
 pub struct EndecodePlugin;
 
