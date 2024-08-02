@@ -12,10 +12,16 @@ impl Plugin for EndecodePlugin {
 
 	fn commands(&self) -> Vec<Box<dyn PluginCommand<Plugin = Self>>> {
 		vec![
-			Box::new(command::Z32Decode),
-			Box::new(command::Z32Encode),
+			Box::new(command::Base58Decode),
+			Box::new(command::Base58Encode),
+			Box::new(command::CrockfordDecode),
+			Box::new(command::CrockfordEncode),
 			Box::new(command::HtmlDecode),
 			Box::new(command::HtmlEncode),
+			Box::new(command::Z32Decode),
+			Box::new(command::Z32Encode),
+			Box::new(command::Z85Decode),
+			Box::new(command::Z85Encode),
 		]
 	}
 }
