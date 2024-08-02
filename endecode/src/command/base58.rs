@@ -1,4 +1,4 @@
-use bs58::{alphabet::Alphabet, decode};
+use bs58::{alphabet::Alphabet, decode, encode};
 use nu_plugin::{EngineInterface, EvaluatedCall, PluginCommand};
 use nu_protocol::{
 	IntoPipelineData, LabeledError, PipelineData, Signature, SyntaxShape,
@@ -56,8 +56,6 @@ impl PluginCommand for Base58Decode {
 		}
 	}
 }
-
-use crate::EndecodePlugin;
 
 pub struct Base58Encode;
 

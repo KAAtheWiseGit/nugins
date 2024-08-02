@@ -1,4 +1,4 @@
-use base32::{decode, Alphabet};
+use base32::{decode, encode, Alphabet};
 use nu_plugin::{EngineInterface, EvaluatedCall, PluginCommand};
 use nu_protocol::{
 	IntoPipelineData, LabeledError, PipelineData, Signature, Value,
@@ -6,9 +6,9 @@ use nu_protocol::{
 
 use crate::EndecodePlugin;
 
-pub struct CrockfordEncode;
+pub struct CrockfordDecode;
 
-impl PluginCommand for CrockfordEncode {
+impl PluginCommand for CrockfordDecode {
 	type Plugin = EndecodePlugin;
 
 	fn name(&self) -> &str {
