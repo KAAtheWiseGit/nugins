@@ -22,6 +22,7 @@ impl Plugin for EndecodePlugin {
 			Box::new(command::Z32Encode),
 			Box::new(command::Z85Decode),
 			Box::new(command::Z85Encode),
+			Box::new(command::Deunicode),
 		]
 	}
 }

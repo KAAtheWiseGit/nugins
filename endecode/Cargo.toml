@@ -7,6 +7,7 @@ edition = "2021"
 base32 = "0.5.1"
 base62 = "2.0.2"
 bs58 = { version = "0.5.1", features = ["alloc"] }
+deunicode = "1.6.0"
 html-escape = "0.2.13"
 nu-plugin = "0.96.0"
 nu-protocol = { version = "0.96.0", features = ["plugin"] }
