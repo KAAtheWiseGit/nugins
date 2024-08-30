@@ -1,6 +1,7 @@
 use nu_plugin::{EngineInterface, EvaluatedCall, PluginCommand};
 use nu_protocol::{
-	IntoPipelineData, LabeledError, PipelineData, Signature, Type, Value,
+	Example, IntoPipelineData, LabeledError, PipelineData, Signature, Type,
+	Value,
 };
 
 use crate::EndecodePlugin;
@@ -25,6 +26,32 @@ impl PluginCommand for Deunicode {
 
 	fn search_terms(&self) -> Vec<&str> {
 		vec!["decoding"]
+	}
+
+	fn examples(&self) -> Vec<Example> {
+		vec![
+			Example {
+				description: "Latin-derived letters",
+				example: "'Æéẞ' | decode unicode",
+				result: Some(Value::test_string("AEeSs")),
+			},
+			Example {
+				description: "Special symbols",
+				example: "'A…B' | decode unicode",
+				result: Some(Value::test_string("A...B")),
+			},
+			Example {
+				description: "Emojis",
+				example: "'☺' | decode unicode",
+				result: Some(Value::test_string(":)")),
+			},
+			Example {
+				description:
+					"Han characters are mapped to Mandarin",
+				example: "'北亰' | decode unicode",
+				result: Some(Value::test_string("Bei Jing")),
+			},
+		]
 	}
 
 	fn run(
