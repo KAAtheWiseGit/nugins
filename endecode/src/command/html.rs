@@ -1,7 +1,7 @@
 use nu_plugin::{EngineInterface, EvaluatedCall, PluginCommand};
 use nu_protocol::{
-	Category, IntoPipelineData, LabeledError, PipelineData, Signature,
-	Type, Value,
+	Category, Example, IntoPipelineData, LabeledError, PipelineData,
+	Signature, Type, Value,
 };
 
 use crate::EndecodePlugin;
@@ -26,7 +26,15 @@ impl PluginCommand for HtmlDecode {
 	}
 
 	fn search_terms(&self) -> Vec<&str> {
-		vec!["decoding"]
+		vec!["decoding", "html"]
+	}
+
+	fn examples(&self) -> Vec<Example> {
+		vec![Example {
+			description: "Unescape HTML-encoded strings",
+			example: "'a &gt; b &amp;&amp; a &lt; c' | decode html",
+			result: Some(Value::test_string("a > b && a < c")),
+		}]
 	}
 
 	fn run(
@@ -63,7 +71,18 @@ impl PluginCommand for HtmlEncode {
 	}
 
 	fn search_terms(&self) -> Vec<&str> {
-		vec!["encoding"]
+		vec!["encoding", "html"]
+	}
+
+	fn examples(&self) -> Vec<Example> {
+		vec![Example {
+			description: "Escape HTML special characters",
+			example:
+				"'<script>alert('pwn!')</script>' | decode html",
+			result: Some(Value::test_string(
+				"&lt;script&gt;alert('pwn!')&lt;/script&gt;",
+			)),
+		}]
 	}
 
 	fn run(
