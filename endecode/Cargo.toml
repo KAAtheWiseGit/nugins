@@ -4,11 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+nu-plugin = { workspace = true }
+nu-protocol = { workspace = true }
+
 base32 = "0.5.1"
 base62 = "2.0.2"
 bs58 = { version = "0.5.1", features = ["alloc"] }
 deunicode = "1.6.0"
 html-escape = "0.2.13"
-nu-plugin = "0.96.0"
-nu-protocol = { version = "0.96.0", features = ["plugin"] }
 z85 = "3.0.5"
