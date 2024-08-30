@@ -2,6 +2,7 @@
 name = "nu_plugin_endecode"
 version = "0.2.0"
 edition = "2021"
+description = "A plugin with various encoding schemes, from Crockford's base-32 to HTML entity escaping."
 
 [dependencies]
 nu-plugin = { workspace = true }
