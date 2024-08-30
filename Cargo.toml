@@ -5,5 +5,5 @@ members = [
 ]
 
 [workspace.dependencies]
-nu-plugin = "0.96.0"
-nu-protocol = { version = "0.96.0", features = ["plugin"] }
+nu-plugin = "0.97.1"
+nu-protocol = { version = "0.97.1", features = ["plugin"] }
