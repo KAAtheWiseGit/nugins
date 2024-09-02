@@ -1,4 +1,4 @@
-use tinytemplate::TinyTemplate;
+use tinytemplate::{format, format_unescaped, TinyTemplate};
 
 use nu_plugin::{
 	serve_plugin, EngineInterface, EvaluatedCall, MsgPackSerializer,
@@ -54,6 +54,11 @@ impl PluginCommand for TemplateCommand {
 				SyntaxShape::Any,
 				"Data used in the template",
 			)
+			.switch(
+				"escape-html",
+				"Escape HTML in the provided strings.",
+				Some('e'),
+			)
 			.category(Category::Strings)
 	}
 
@@ -73,6 +78,10 @@ impl PluginCommand for TemplateCommand {
 		let json = json::value_to_json_value(&context).unwrap();
 
 		let mut tt = TinyTemplate::new();
+		tt.set_default_formatter(&format_unescaped);
+		if call.has_flag("escape-html")? {
+			tt.set_default_formatter(&format)
+		}
 		tt.add_template("template", &template).unwrap();
 		let rendered = tt.render("template", &json).unwrap();
 
