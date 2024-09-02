@@ -5,9 +5,11 @@ use nu_plugin::{
 	Plugin, PluginCommand,
 };
 use nu_protocol::{
-	Category, IntoPipelineData, LabeledError, PipelineData, Record,
-	Signature, Span, SyntaxShape, Type, Value,
+	Category, IntoPipelineData, LabeledError, PipelineData, Signature,
+	Span, SyntaxShape, Type, Value,
 };
+
+mod json;
 
 pub struct TemplatePlugin;
 
@@ -49,7 +51,7 @@ impl PluginCommand for TemplateCommand {
 			.input_output_types(vec![(Type::String, Type::String)])
 			.required(
 				"context",
-				SyntaxShape::Record(vec![]),
+				SyntaxShape::Any,
 				"Data used in the template",
 			)
 			.category(Category::Strings)
@@ -67,13 +69,12 @@ impl PluginCommand for TemplateCommand {
 		input: PipelineData,
 	) -> Result<PipelineData> {
 		let (template, _template_span) = get_string(input, call.head)?;
-		let record = call.req::<Record>(0)?;
-
-		println!("{}", serde_json::to_string(&record).unwrap());
+		let context: Value = call.req(0)?;
+		let json = json::value_to_json_value(&context).unwrap();
 
 		let mut tt = TinyTemplate::new();
 		tt.add_template("template", &template).unwrap();
-		let rendered = tt.render("template", &record).unwrap();
+		let rendered = tt.render("template", &json).unwrap();
 
 		Ok(Value::string(rendered, call.head).into_pipeline_data())
 	}

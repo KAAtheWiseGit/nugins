@@ -667,6 +667,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "linked-hash-map"
+version = "0.5.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0717cef1bc8b636c6e1c1bbdefc09e6322da8a9321966e8928ef80d20f7f770f"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "linux-raw-sys"
 version = "0.4.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -829,6 +838,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f4097b0014c26a039018990a4fe8d8fd5658c00e94621b34751869649b0aa942"
 
 [[package]]
+name = "nu-json"
+version = "0.97.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1bd1d64f5536b4ed618c857b2215330e2d6fcd869f62b7ca0b04350067ebc442"
+dependencies = [
+ "linked-hash-map",
+ "num-traits",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nu-path"
 version = "0.97.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -972,6 +993,7 @@ dependencies = [
 name = "nu_plugin_template"
 version = "0.1.0"
 dependencies = [
+ "nu-json",
  "nu-plugin",
  "nu-protocol",
  "serde_json",
