@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
 	"endecode",
+	"template",
 ]
 
 [workspace.dependencies]
