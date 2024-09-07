@@ -1,4 +1,6 @@
-use tinytemplate::{format, format_unescaped, TinyTemplate};
+use tinytemplate::{
+	error::Error as TError, format, format_unescaped, TinyTemplate,
+};
 
 use nu_plugin::{
 	serve_plugin, EngineInterface, EvaluatedCall, MsgPackSerializer,
@@ -73,17 +75,20 @@ impl PluginCommand for TemplateCommand {
 		call: &EvaluatedCall,
 		input: PipelineData,
 	) -> Result<PipelineData> {
-		let (template, _template_span) = get_string(input, call.head)?;
+		let (template, template_span) = get_string(input, call.head)?;
 		let context: Value = call.req(0)?;
-		let json = json::value_to_json_value(&context).unwrap();
+		let json = json::value_to_json_value(&context)?;
 
 		let mut tt = TinyTemplate::new();
 		tt.set_default_formatter(&format_unescaped);
 		if call.has_flag("escape-html")? {
 			tt.set_default_formatter(&format)
 		}
-		tt.add_template("template", &template).unwrap();
-		let rendered = tt.render("template", &json).unwrap();
+		tt.add_template("template", &template)
+			.map_err(|e| into_labelled(e, template_span))?;
+		let rendered = tt
+			.render("template", &json)
+			.map_err(|e| into_labelled(e, template_span))?;
 
 		Ok(Value::string(rendered, call.head).into_pipeline_data())
 	}
@@ -108,5 +113,29 @@ fn get_string(input: PipelineData, head_span: Span) -> Result<(String, Span)> {
 		_ => {
 			unreachable!("type signature");
 		}
+	}
+}
+
+const REPORT: &str = "If you see this, please report a bug at https://codeberg.org/kaathewise/nu-plugin/issues";
+
+fn into_labelled(error: TError, template_span: Span) -> LabeledError {
+	match error {
+		TError::ParseError { msg, line, column } => {
+			LabeledError::new(msg).with_label(
+				format!("line {line}, column {column}",),
+				template_span,
+			)
+		}
+		TError::GenericError { msg } => LabeledError::new(msg),
+		TError::RenderError { msg, line, column } => {
+			LabeledError::new(msg).with_label(
+				format!("line {line}, column {column}",),
+				template_span,
+			)
+		}
+		TError::SerdeError { err } => {
+			LabeledError::new(err.to_string())
+		}
+		_ => LabeledError::new("Internal error").with_help(REPORT),
 	}
 }
