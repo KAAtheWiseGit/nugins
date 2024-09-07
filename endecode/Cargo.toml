@@ -6,6 +6,7 @@ license = "MPL-2.0"
 description = "A plugin with various encoding schemes, from Crockford's base-32 to HTML entity escaping."
 authors = ["Andrej Kolčin <self@kaathewise.net>"]
 repository = "https://codeberg.org/kaathewise/nu-plugin"
+keywords = ["nushell", "nushell-plugin", "codec"]
 
 [dependencies]
 nu-plugin = { workspace = true }
