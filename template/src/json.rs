@@ -19,7 +19,13 @@ pub fn value_to_json_value(v: &Value) -> Result<JsonValue, LabeledError> {
 		Value::Bool { val, .. } => JsonValue::Bool(*val),
 		Value::Date { val, .. } => string!(val),
 		Value::Float { val, .. } => {
-			JsonValue::Number(Number::from_f64(*val).unwrap())
+			if let Some(json_number) = Number::from_f64(*val) {
+				JsonValue::Number(json_number)
+			} else {
+				// JSON doesn't support NaN or Inf, so convert
+				// those to a string
+				JsonValue::String(val.to_string())
+			}
 		}
 		Value::Int { val, .. } => number!(val),
 		Value::Nothing { .. } => JsonValue::Null,
