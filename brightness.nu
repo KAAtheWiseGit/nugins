@@ -71,8 +71,7 @@ def parse_value [value, span, device] {
 			msg: "Brightness value must be an integer with an optional '%' at the end"
 			label: {
 				text: "malformed value"
-				start: $span.start
-				end: $span.end
+				span: $span
 			}
 		}
 	})
@@ -142,7 +141,7 @@ export def main [
 		try {
 			open (get_state_file_path)
 		} catch {
-			error make { msg: "No saved state to restore" }
+			error make --unspanned { msg: "No saved state to restore" }
 		}
 		| each {|d|
 			set_brightness $d $d.brightness
@@ -153,13 +152,8 @@ export def main [
 	"set" | "increase" | "decrease" => {
 		if $value == null {
 			let $span = (metadata $operation).span
-			error make {
+			error make --unspanned {
 				msg: $"Missing a value to ($operation)"
-				label: {
-					text: "{value}"
-					start: ($span.end - 1)
-					end: ($span.end)
-				}
 			}
 		}
 
@@ -182,13 +176,11 @@ export def main [
 		if not $quiet { print $device }
 	}
 	_ => {
-		let span = (metadata $operation).span
 		error make {
 			msg: $"Operation \"($operation)\" not found"
 			label: {
 				text: "invalid subcommand",
-				start: $span.start,
-				end: $span.end,
+				span: (metadata $operation).span,
 			}
 		}
 	}
