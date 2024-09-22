@@ -15,7 +15,7 @@ impl PluginCommand for CrockfordDecode {
 		"decode crockford"
 	}
 
-	fn usage(&self) -> &str {
+	fn description(&self) -> &str {
 		"Decode a string or binary value using Base32, RFC 4648, section 6."
 	}
 
@@ -57,7 +57,7 @@ impl PluginCommand for CrockfordEncode {
 		"encode crockford"
 	}
 
-	fn usage(&self) -> &str {
+	fn description(&self) -> &str {
 		"Encode a string or binary value using Base32, RFC 4648, section 6."
 	}
 

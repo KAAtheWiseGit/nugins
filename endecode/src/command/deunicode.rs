@@ -15,7 +15,7 @@ impl PluginCommand for Deunicode {
 		"decode unicode"
 	}
 
-	fn usage(&self) -> &str {
+	fn description(&self) -> &str {
 		"Translate a unicode string into pure ASCII."
 	}
 

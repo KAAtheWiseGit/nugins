@@ -15,7 +15,7 @@ impl PluginCommand for HtmlDecode {
 		"decode html"
 	}
 
-	fn usage(&self) -> &str {
+	fn description(&self) -> &str {
 		"Unescape HTML entities in a string."
 	}
 
@@ -60,7 +60,7 @@ impl PluginCommand for HtmlEncode {
 		"encode html"
 	}
 
-	fn usage(&self) -> &str {
+	fn description(&self) -> &str {
 		"Escape special HTML characters into HTML entities."
 	}
 

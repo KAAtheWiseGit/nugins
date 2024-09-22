@@ -40,11 +40,11 @@ impl PluginCommand for TemplateCommand {
 		"template"
 	}
 
-	fn usage(&self) -> &str {
+	fn description(&self) -> &str {
 		"A template engine"
 	}
 
-	fn extra_usage(&self) -> &str {
+	fn extra_description(&self) -> &str {
 		"This command uses the TinyTemplate Rust library.  Full syntax description can be found here:\n\nhttps://docs.rs/tinytemplate/1.2.1/tinytemplate/syntax/index.html"
 	}
 

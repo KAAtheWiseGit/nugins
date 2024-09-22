@@ -15,7 +15,7 @@ impl PluginCommand for Z85Decode {
 		"decode z85"
 	}
 
-	fn usage(&self) -> &str {
+	fn description(&self) -> &str {
 		"Decode a string or binary value using ZeroMQ’s Z85 decoding."
 	}
 
@@ -54,7 +54,7 @@ impl PluginCommand for Z85Encode {
 		"encode z85"
 	}
 
-	fn usage(&self) -> &str {
+	fn description(&self) -> &str {
 		"Encode a string or binary value using ZeroMQ’s Z85 encoding."
 	}
 

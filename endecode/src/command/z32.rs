@@ -15,7 +15,7 @@ impl PluginCommand for Z32Decode {
 		"decode z32"
 	}
 
-	fn usage(&self) -> &str {
+	fn description(&self) -> &str {
 		"Decode a string or binary value with the z-base-32 decoding."
 	}
 
@@ -57,7 +57,7 @@ impl PluginCommand for Z32Encode {
 		"encode z32"
 	}
 
-	fn usage(&self) -> &str {
+	fn description(&self) -> &str {
 		"Encode a string or binary value with the z-base-32 encoding."
 	}
 

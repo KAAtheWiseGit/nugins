@@ -16,7 +16,7 @@ impl PluginCommand for Base58Decode {
 		"decode base58"
 	}
 
-	fn usage(&self) -> &str {
+	fn description(&self) -> &str {
 		"Decode a string or binary value using a Base58 alphabet."
 	}
 
@@ -66,7 +66,7 @@ impl PluginCommand for Base58Encode {
 		"encode base58"
 	}
 
-	fn usage(&self) -> &str {
+	fn description(&self) -> &str {
 		"Encode a string or binary value using a Base58 alphabet."
 	}
 
