@@ -2,6 +2,9 @@
 
 ## [`brightnessctl`](https://github.com/Hummer12007/brightnessctl)
 
+The original program this utility was inspired by.  Most of the
+interface design was copied from it.
+
 ```LICENCE
 Copyright (c) 2016 Mykyta Holuakha
 
