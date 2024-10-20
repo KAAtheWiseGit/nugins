@@ -975,7 +975,7 @@ dependencies = [
 
 [[package]]
 name = "nu_plugin_endecode"
-version = "0.3.0"
+version = "0.99.0"
 dependencies = [
  "base32",
  "base62",
@@ -989,7 +989,7 @@ dependencies = [
 
 [[package]]
 name = "nu_plugin_template"
-version = "0.3.0"
+version = "0.99.0"
 dependencies = [
  "nu-json",
  "nu-plugin",
