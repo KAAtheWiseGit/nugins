@@ -12,9 +12,9 @@ keywords = ["nushell", "nushell-plugin", "codec"]
 nu-plugin = { workspace = true }
 nu-protocol = { workspace = true }
 
-base32 = "0.5.1"
-base62 = "2.0.2"
-bs58 = { version = "0.5.1", features = ["alloc"] }
-deunicode = "1.6.0"
-html-escape = "0.2.13"
-z85 = "3.0.5"
+base32 = { workspace = true }
+base62 = { workspace = true }
+bs58 = { workspace = true, features = ["alloc"] }
+deunicode = { workspace = true }
+html-escape = { workspace = true }
+z85 = { workspace = true }
