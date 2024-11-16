@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.100.0] — 2024-11-16
+
+### Fixed
+
+- Bump the Nushell version to 0.100.0.
+
+
 ## [0.2.0] — 2024-09-07
 
 ### Fixed
