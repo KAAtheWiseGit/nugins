@@ -5,6 +5,12 @@ members = [
 	"template",
 ]
 
+[workspace.package]
+edition = "2021"
+license = "MPL-2.0"
+authors = ["Andrej Kolčin <self@kaathewise.net>"]
+repository = "https://github.com/kaathewisegit/nugins"
+
 [workspace.dependencies]
 nu-json = "0.100.0"
 nu-plugin = "0.100.0"

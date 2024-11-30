@@ -1,11 +1,10 @@
 [package]
 name = "nu_plugin_endecode"
 version = "0.100.0"
-edition = "2021"
-license = "MPL-2.0"
+edition.workspace = true
+authors.workspace = true
+repository.workspace = true
 description = "A plugin with various encoding schemes, from Crockford's base-32 to HTML entity escaping."
-authors = ["Andrej Kolčin <self@kaathewise.net>"]
-repository = "https://codeberg.org/kaathewise/nugins"
 keywords = ["nushell", "nushell-plugin", "codec"]
 
 [dependencies]
