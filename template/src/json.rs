@@ -44,15 +44,22 @@ pub fn value_to_json_value(v: &Value) -> Result<JsonValue, LabeledError> {
 			value_to_json_value(&collected)?
 		}
 
-		Value::Binary { .. }
-		| Value::Closure { .. }
-		| Value::Range { .. }
-		| Value::Duration { .. }
-		| Value::Filesize { .. }
-		| Value::CellPath { .. } => todo!("unsupported error"),
+		v @ Value::Binary { .. }
+		| v @ Value::Closure { .. }
+		| v @ Value::Range { .. }
+		| v @ Value::Duration { .. }
+		| v @ Value::Filesize { .. }
+		| v @ Value::CellPath { .. } => {
+			return Err(LabeledError::new("Unsupported type")
+				.with_code("template::unsupported_type")
+				.with_label(
+					v.get_type().to_string(),
+					v.span(),
+				))
+		}
 
-		Value::Error { error: _, .. } => {
-			todo!("Figure out what to do with errors");
+		Value::Error { error, .. } => {
+			return Err(LabeledError::from_diagnostic(&**error));
 		}
 	})
 }
