@@ -1,0 +1,14 @@
+image: alpine/edge
+oauth: git.sr.ht/REPOSITORIES:RW git.sr.ht/PROFILE:RO
+packages:
+  - hut
+  - jotdown
+sources:
+  - https://git.sr.ht/~kaathewise/nupass
+environment:
+  name: nupass
+tasks:
+  - readme: |
+      cd $name
+      jotdown README.dj -o README.html
+      hut git update --readme README.html --repo https://git.sr.ht/~kaathewise/$name
