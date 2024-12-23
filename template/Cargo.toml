@@ -4,6 +4,7 @@ version = "0.101.0"
 edition.workspace = true
 authors.workspace = true
 repository.workspace = true
+license.workspace = true
 description = "Templating in Nushell, powered by TinyTemplate"
 keywords = ["nushell", "nushell-plugin", "template"]
 

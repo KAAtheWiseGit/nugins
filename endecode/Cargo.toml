@@ -4,6 +4,7 @@ version = "0.101.0"
 edition.workspace = true
 authors.workspace = true
 repository.workspace = true
+license.workspace = true
 description = "A plugin with various encoding schemes, from Crockford's base-32 to HTML entity escaping."
 keywords = ["nushell", "nushell-plugin", "codec"]
 
