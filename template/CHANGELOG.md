@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.101.0] — 2024-12-23
+
+### Fixed
+
+- Handle errors for the input values: error objects are bubbled up and
+  types unconvertible to JSON result in a custom error.
+
+
 ## [0.100.0] — 2024-11-16
 
 ### Fixed
