@@ -6,6 +6,7 @@ authors.workspace = true
 repository.workspace = true
 license.workspace = true
 description = "Templating in Nushell, powered by TinyTemplate"
+categories = ["template-engine"]
 keywords = ["nushell", "nushell-plugin", "template"]
 
 [dependencies]
