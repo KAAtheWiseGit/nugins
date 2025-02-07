@@ -5,6 +5,29 @@ def installed-packages [] {
 	| str replace --regex `([^@]+).*` "${1}"
 }
 
+def get-all-packages [] {
+	apk list
+	| lines
+	| uniq
+	| parse "{name_version} {rest}"
+	| get name_version
+	| parse --regex `([a-zA-Z0-9+-]+)-([0-9.]+[a-z]?(_[a-zA-Z]+\d*)*)(-r\d+)`
+	| insert version { $in.capture1 + $in.capture2 + $in.capture3 }
+	| rename name
+	| select name version
+}
+
+def all-packages [] {
+	try {
+		stor open | query db "select * from __comp_apk" | length
+	} catch {
+		stor create --table-name __comp_apk --columns {name: str, version: str}
+		get-all-packages | stor insert --table-name __comp_apk
+	}
+
+	stor open | query db "select * from __comp_apk" | get name
+}
+
 # Alpine package manager
 export extern apk []
 
@@ -16,7 +39,7 @@ export extern "apk add" [
 	--virtual (-t): string	# Create virtual package with given dependencies
 	--no-chown	# Do not change file owner or group
 
-	...CONSTRAINTS: string
+	...CONSTRAINTS: string@all-packages
 ]
 
 # Remove constraints from WORLD and commit changes
@@ -34,7 +57,7 @@ export extern "apk fix" [
 	--xattr (-x)		# Fix packages with broken xattrs
 	--directory-permissions	# Reset all directory permissions
 
-	...PACKAGES: string
+	...PACKAGES: string@all-packages
 ]
 
 # Update repository indexes
@@ -50,7 +73,7 @@ export extern "apk upgrade" [
 	--prune			# Prune the WORLD by removing packages which are no longer available from any configured repository
 	--self-upgrade-only	# Only perform a self-upgrade of the 'apk-tools' package
 
-	...PACKAGES: string
+	...PACKAGES: string@all-packages
 ]
 
 # Manage the local package cache
@@ -81,7 +104,7 @@ export extern "apk info" [
 	--rinstall-if		# List other packages whose install_if rules refer to this package
 	--triggers (-t)		# Print active triggers for the package
 
-	...PACKAGES: string
+	...PACKAGES: string@all-packages
 ]
 
 # List packages matching a pattern or other criteria
@@ -105,7 +128,7 @@ export extern "apk dot" [
 
 # Show repository policy for packages
 export extern "apk policy" [
-	...PACKAGES: string
+	...PACKAGES: string@all-packages
 ]
 
 # Search for packages by name or description
@@ -130,7 +153,7 @@ export extern "apk index" [
 	--no-warnings			# Disable the warning about missing dependencies
 	--rewrite-arch: string		# Set all packages' architecture
 
-	...PACKAGES: string
+	...PACKAGES: string@all-packages
 ]
 
 # Download packages from repositories to a local directory
@@ -144,12 +167,12 @@ export extern "apk fetch" [
 	--simulate			# Simulate the requested operation without making any changes
 	--url				# Print the full URL for downloaded packages
 
-	...PACKAGES: string
+	...PACKAGES: string@all-packages
 ]
 
 # Show checksums of package contents
 export extern "apk manifest" [
-	...PACKAGES: string
+	...PACKAGES: string@all-packages
 ]
 
 # Verify package integrity and signature
@@ -183,5 +206,5 @@ export extern "apk version" [
 	--limit (-l): string	# Limit to packages with output matching the given operand
 	--test (-t)		# Compare two version strings
 
-	...PACKAGES: string
+	...PACKAGES: string@all-packages
 ]
