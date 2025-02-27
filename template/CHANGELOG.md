@@ -1,6 +1,17 @@
 # Changelog
 
+## [0.102.0] — 2025-02-27
+
+### Changed
+
+- Bump the Nushell version to `0.102.0`.
+
+
 ## [0.101.0] — 2024-12-23
+
+### Changed
+
+- Bump the Nushell version to `0.101.0`.
 
 ### Fixed
 
@@ -10,9 +21,9 @@
 
 ## [0.100.0] — 2024-11-16
 
-### Fixed
+### Changed
 
-- Bump the Nushell version to 0.100.0.
+- Bump the Nushell version to `0.100.0`.
 
 
 ## [0.2.0] — 2024-09-07
