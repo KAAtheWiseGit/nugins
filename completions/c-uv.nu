@@ -1244,6 +1244,10 @@ export extern "uv python" [
 	--version(-V)             # Display the uv version
 ]
 
+def output-format [] {
+	["text", "json"]
+}
+
 # List the available Python installations
 export extern "uv python list" [
 	--all-versions            # List all Python versions, including old patch versions
@@ -1252,7 +1256,7 @@ export extern "uv python list" [
 	--only-installed          # Only show installed Python versions, exclude available downloads
 	--only-downloads          # Only show Python downloads, exclude installed distributions
 	--show-urls               # Show the URLs of available Python downloads
-	--output-format: string@format # Select the output format
+	--output-format: string@output-format # Select the output format
 	--no-cache(-n)            # Avoid reading from or writing to the cache, instead using a temporary directory for the duration of the operation
 	--cache-dir: path         # Path to the cache directory
 	--python-preference: string@python-preference # Whether to prefer uv-managed or system Python installations
@@ -1872,12 +1876,16 @@ export extern "uv pip freeze" [
 	--version(-V)             # Display the uv version
 ]
 
+def list-format [] {
+	["columns", "freeze", "json"]
+}
+
 # List, in tabular format, packages installed in an environment
 export extern "uv pip list" [
 	--editable(-e)            # Only include editable projects
 	--exclude-editable        # Exclude any editable packages from output
 	--exclude: string         # Exclude the specified package(s) from the output
-	--format: string@format # Select the output format
+	--format: string@list-format # Select the output format
 	--outdated                # List outdated packages
 	--no-outdated
 	--strict                  # Validate the Python environment, to detect packages with missing dependencies and other issues
@@ -2742,7 +2750,7 @@ export extern "uv clean" [
 
 # Display uv's version
 export extern "uv version" [
-	--output-format: string@format
+	--output-format: string@output-format
 	--no-cache(-n)            # Avoid reading from or writing to the cache, instead using a temporary directory for the duration of the operation
 	--cache-dir: path         # Path to the cache directory
 	--python-preference: string@python-preference # Whether to prefer uv-managed or system Python installations
