@@ -1,3 +1,6 @@
+# A workaround, because Nushell sources autoloads instead of importing
+module brightness {
+
 const sys = "/sys/class/"
 const backlight = "/sys/class/backlight"
 const leds = "/sys/class/leds"
@@ -186,3 +189,7 @@ export def main [
 	}
 	}
 }
+
+}
+
+use brightness

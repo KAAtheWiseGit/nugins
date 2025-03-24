@@ -32,16 +32,16 @@ export def install [
 		}
 	}
 
-	let vendor = $nu.vendor-autoload-dirs | last
-	mkdir $vendor
-	cp brightness.nu $vendor
+	let dst = $nu.user-autoload-dirs | last
+	mkdir $dst
+	cp brightness.nu $dst
 }
 
 # Uninstall `brightness.nu` files
 export def uninstall [
 	--udev-rules-dir: string = "/usr/lib/udev/rules.d/"	# Path with the `udev` rules
 ] {
-	let installed = $nu.vendor-autoload-dirs | last | path join brightness.nu
+	let installed = $nu.user-autoload-dirs | last | path join brightness.nu
 	if not ($installed | path exists) {
 		error make --unspanned {msg: "Brightness.nu isn't installed"}
 	}
