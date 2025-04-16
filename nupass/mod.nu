@@ -81,10 +81,10 @@ export def add [
 
 	let tmp = $"($path).tmp"
 	mkdir ($path | path dirname)
-	^$env.EDITOR tmp
-	open tmp | encrypt | save $path --force
+	^$env.EDITOR $tmp
+	open $tmp | encrypt | save $path --force
 
-	rm tmp
+	rm $tmp
 
 	git_commit $name "add secret"
 }
