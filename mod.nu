@@ -12,7 +12,6 @@ def "merge config" [] {
 	let config = $in
 
 	let out = $DEFAULT | merge $config
-	print $out
 	$out
 }
 
