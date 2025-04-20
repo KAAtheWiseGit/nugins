@@ -1,4 +1,5 @@
 let wayland_display = [$env.XDG_RUNTIME_DIR $env.WAYLAND_DISPLAY] | path join
+let audio = [$env.XDG_RUNTIME_DIR pulse] | path join
 
 (
 	bwrap
@@ -22,11 +23,12 @@ let wayland_display = [$env.XDG_RUNTIME_DIR $env.WAYLAND_DISPLAY] | path join
 	--ro-bind /etc/fonts/ /etc/fonts/
 	--ro-bind /etc/resolv.conf /etc/resolv.conf
 
+	--ro-bind $audio $audio
+	--ro-bind $wayland_display $wayland_display
+
 	--bind /home/kaathewise/.cache/firefox /home/kaathewise/.cache
 	--bind /home/kaathewise/.local/share/firefox /home/kaathewise/.mozilla
 	--bind /home/kaathewise/download /home/kaathewise/download
-
-	--ro-bind $wayland_display $wayland_display
 
 	--ro-bind /lib /lib
 	--ro-bind /usr/lib /usr/lib
