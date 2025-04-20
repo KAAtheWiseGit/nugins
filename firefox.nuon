@@ -1,0 +1,43 @@
+{
+	net: true
+
+	env: [
+		HOME
+		WAYLAND_DISPLAY
+		XDG_CACHE_HOME
+		XDG_RUNTIME_DIR
+	]
+
+	dev: [/dev/dri, /dev/snd]
+
+	read: [
+		/sys/dev/char/
+		/sys/devices/pci0000:00/
+
+		/etc/fonts/
+		/etc/resolv.conf
+
+		/tmp/1000-runtime-dir/pulse/
+		/tmp/1000-runtime-dir/wayland-1
+
+		/lib /lib
+		/usr/lib /usr/lib
+
+		/usr/share/X11/xkb/
+		/usr/share/fontconfig/
+		/usr/share/fonts/
+		/usr/share/glib-2.0/
+		/usr/share/icons/
+		/usr/share/icu/
+		/usr/share/mime/
+	]
+
+	write: [
+		[/home/kaathewise/.cache/firefox /home/kaathewise/.cache]
+		[/home/kaathewise/.local/share/firefox /home/kaathewise/.mozilla]
+		/home/kaathewise/download
+
+	]
+
+	binary: /usr/lib/firefox/firefox
+}
