@@ -75,15 +75,15 @@ def "make cmd" [] {
 		}
 	}
 
-	$cmd ++= [$config.binary]
+	$cmd ++= [-- $config.binary]
 
 	$cmd
 }
 
-export def main [path: path] {
+export def main [path: path, ...args] {
 	let cmd = open $path
 		| merge config
 		| make cmd
 
-	run-external ...$cmd
+	run-external ...$cmd ...$args
 }
