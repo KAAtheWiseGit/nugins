@@ -44,6 +44,9 @@ def "make cmd" [] {
 		string => {
 			$cmd ++= [--setenv $value ($env | get $value)]
 		}
+		list => {
+			$cmd ++= [--setenv $value.0 $value.1]
+		}
 		}
 	}
 
@@ -79,8 +82,9 @@ def "make cmd" [] {
 }
 
 export def main [path: path] {
-	open $path
-	| merge config
-	| make cmd
-	| run-external ...$in
+	let cmd = open $path
+		| merge config
+		| make cmd
+
+	run-external ...$cmd
 }
