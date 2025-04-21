@@ -27,7 +27,9 @@ def "make cmd" [] {
 
 		--dev /dev
 		--proc /proc
-		--tmpfs /tmp
+
+		--tmpfs /local-tmp
+		--setenv TMPDIR /local-tmp
 	]
 
 	if not $config.keep-session {
