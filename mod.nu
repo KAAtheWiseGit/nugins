@@ -82,10 +82,20 @@ def "make cmd" [] {
 	$cmd
 }
 
-export def main [path: path, ...args] {
+export def main [
+	--exec
+
+	path: path
+
+	...args
+] {
 	let cmd = open $path
 		| merge config
 		| make cmd
 
-	run-external ...$cmd ...$args
+	if $exec {
+		exec ...$cmd ...$args
+	} else {
+		run-external ...$cmd ...$args
+	}
 }
