@@ -82,7 +82,7 @@ def "make cmd" [] {
 	$cmd
 }
 
-export def main [
+export def main --wrapped [
 	--exec
 
 	path: path
