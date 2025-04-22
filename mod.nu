@@ -40,6 +40,10 @@ def "make cmd" [] {
 		$cmd ++= [--share-net]
 	}
 
+	if $config.hostname? != null {
+		$cmd ++= [--hostname $config.hostname]
+	}
+
 	for value in $config.env {
 		match ($value | describe --detailed | get type) {
 		string => {
