@@ -4,11 +4,17 @@ use util.nu *
 export def main [
 	--print (-p)	# Print the secret instead of copying it
 	--output (-o)	# Pipe the secret to the stdout
+
+	secret?: string@secrets	# Secret name.  If omitted, can be selected interactively
 ] {
 	cd $env.NUPASS.REPOSITORY
 
-	let selection = select secret
-	let path = $selection | into filepath
+	let secret = if $secret != null {
+		$secret
+	} else {
+		select secret
+	}
+	let path = $secret | into filepath
 
 	print $"Getting (ansi yellow)(
 		$path
