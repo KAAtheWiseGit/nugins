@@ -2,17 +2,29 @@ const DEFAULT = {
 	keep-session: false
 	net: false
 
+	import: []
 	env: []
 	dev: []
 	read: []
 	write: []
 }
 
-def "merge config" [] {
-	let config = $in
+def "open config" [path: path] {
+	let config = open $path
+	mut config = $DEFAULT | merge $config
 
-	let out = $DEFAULT | merge $config
-	$out
+	# get the imports
+	let imports = $config.import
+	$config.import = null
+
+	let dir = $path | path dirname
+	for import in $imports {
+		let import_path = [$dir $import] | path join
+		let import_config = open config $import_path
+		$config = $import_config | merge deep --strategy append $config
+	}
+
+	$config
 }
 
 def "make cmd" [] {
@@ -28,8 +40,8 @@ def "make cmd" [] {
 		--dev /dev
 		--proc /proc
 
-		--tmpfs /local-tmp
-		--setenv TMPDIR /local-tmp
+		--tmpfs /tmp
+		# --setenv TMPDIR /temporary
 	]
 
 	if not $config.keep-session {
@@ -93,9 +105,7 @@ export def main --wrapped [
 
 	...args
 ] {
-	let cmd = open $path
-		| merge config
-		| make cmd
+	let cmd = open config $path | make cmd
 
 	if $exec {
 		exec ...$cmd ...$args
