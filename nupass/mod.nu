@@ -143,3 +143,8 @@ export def move [
 
 	git_commit $new_name $"rename from ($old_name)"
 }
+
+# Synchronize the secrets git repository with the upstream.
+export def sync [] {
+	git_push
+}

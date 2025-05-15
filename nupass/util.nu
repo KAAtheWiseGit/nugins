@@ -28,6 +28,10 @@ export def git_commit [
 	}
 
 	git commit -m $"($name): ($message)"
+}
+
+export def git_push [] {
+	cd $env.NUPASS.REPOSITORY
 	git push
 }
 
