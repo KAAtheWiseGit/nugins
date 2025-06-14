@@ -12,9 +12,9 @@ authors = ["Andrej Kolčin <self@kaathewise.net>"]
 repository = "https://github.com/kaathewisegit/nugins"
 
 [workspace.dependencies]
-nu-json = "0.104"
-nu-plugin = "0.104"
-nu-protocol = { version = "0.104", features = ["plugin"] }
+nu-json = "0.105.1"
+nu-plugin = "0.105.1"
+nu-protocol = { version = "0.105.1", features = ["plugin"] }
 
 base32 = "0.5"
 base62 = "2.0"

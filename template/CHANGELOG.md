@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.105.1] — 2025-06-14
+
+- Bump the Nushell version to `0.105.1`.
+
+
 ## [0.102.0] — 2025-02-27
 
 ### Changed
