@@ -31,8 +31,8 @@ def get_devices [
 			max_brightness:		$max_brightness
 		}
 	}
-	| if $device != null { filter {|d| $d.name =~ $device } } else {}
-	| if $class != null { filter {|d| $d.class == $class } } else {}
+	| if $device != null { where name =~ $device } else {}
+	| if $class != null { where class == $class } else {}
 	| if $first {
 		try { first } catch {
 			error make { msg: $"Device matching ($device) not found" }
