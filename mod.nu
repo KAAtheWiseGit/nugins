@@ -74,10 +74,10 @@ def "make cmd" [] {
 	for value in $config.read {
 		match ($value | describe --detailed | get type) {
 		string => {
-			$cmd ++= [--ro-bind $value $value]
+			$cmd ++= [--ro-bind-try $value $value]
 		}
 		list => {
-			$cmd ++= [--ro-bind $value.0 $value.1]
+			$cmd ++= [--ro-bind-try $value.0 $value.1]
 		}
 		}
 	}
@@ -85,10 +85,10 @@ def "make cmd" [] {
 	for value in $config.write {
 		match ($value | describe --detailed | get type) {
 		string => {
-			$cmd ++= [--bind $value $value]
+			$cmd ++= [--bind-try $value $value]
 		}
 		list => {
-			$cmd ++= [--bind $value.0 $value.1]
+			$cmd ++= [--bind-try $value.0 $value.1]
 		}
 		}
 	}
