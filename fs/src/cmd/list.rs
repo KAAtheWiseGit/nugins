@@ -11,7 +11,7 @@ use std::{
 	path::PathBuf,
 };
 
-use crate::{util, FsPlugin};
+use crate::{paths::PathsIter, util, FsPlugin};
 
 pub struct List;
 
@@ -19,7 +19,7 @@ impl PluginCommand for List {
 	type Plugin = FsPlugin;
 
 	fn name(&self) -> &str {
-		"fs list"
+		"fs list_"
 	}
 
 	fn description(&self) -> &str {
@@ -29,7 +29,11 @@ impl PluginCommand for List {
 	fn signature(&self) -> Signature {
 		Signature::build(self.name())
 			.category(Category::FileSystem)
-			.input_output_type(Type::Nothing, Type::table())
+			.input_output_types(vec![
+				(Type::list(Type::Glob), Type::table()),
+				(Type::list(Type::String), Type::table()),
+				(Type::Nothing, Type::table()),
+			])
 			.rest(
 				"paths",
 				SyntaxShape::OneOf(vec![
@@ -49,9 +53,15 @@ impl PluginCommand for List {
 		_plugin: &FsPlugin,
 		_engine: &EngineInterface,
 		call: &EvaluatedCall,
-		_input: PipelineData,
+		input: PipelineData,
 	) -> Result<PipelineData, LabeledError> {
-		// TODO
+		let paths = PathsIter::new(call, input)?;
+
+		for path in paths {
+			let path = path?;
+
+			println!("{path:?}");
+		}
 
 		Ok(Value::nothing(call.head).into_pipeline_data())
 	}
