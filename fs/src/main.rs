@@ -14,6 +14,7 @@ impl Plugin for FsPlugin {
 		vec![
 			Box::new(cmd::Fs),
 			Box::new(cmd::Delete),
+			Box::new(cmd::List),
 			Box::new(cmd::Shred),
 		]
 	}
