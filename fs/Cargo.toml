@@ -1,0 +1,13 @@
+[package]
+name = "nu_plugin_fs"
+version = "0.106.1"
+edition.workspace = true
+authors.workspace = true
+repository.workspace = true
+license.workspace = true
+description = "Filesystem manipulation utilities"
+keywords = ["nushell", "nushell-plugin", "filesystem"]
+
+[dependencies]
+nu-plugin = { workspace = true }
+nu-protocol = { workspace = true }
