@@ -6,7 +6,7 @@ use nu_protocol::{
 
 use std::{
 	io::{self, Write},
-	path::PathBuf,
+	path::{Path, PathBuf},
 };
 
 use crate::{fs, FsPlugin};
@@ -49,8 +49,6 @@ impl PluginCommand for Shred {
 		call: &EvaluatedCall,
 		_input: PipelineData,
 	) -> Result<PipelineData, LabeledError> {
-		// TODO: check that paths are not empty
-
 		let paths = call.rest::<Spanned<NuGlob>>(0)?;
 
 		if engine.is_using_stdio() {
@@ -68,8 +66,6 @@ impl PluginCommand for Shred {
 				));
 		}
 
-		let mut answer = String::new();
-
 		for path in paths {
 			let path = match path.item {
 				NuGlob::DoNotExpand(s) => s,
@@ -77,22 +73,39 @@ impl PluginCommand for Shred {
 			};
 			let path = cwd.join(path);
 
-			print!("remove permanently: {path:?}  [y/n]: ");
-			io::stdout().flush().unwrap();
-			answer.clear();
-			io::stdin().read_line(&mut answer).unwrap();
-
-			let confirmed = match answer.trim() {
-				"y" | "Y" => true,
-				"n" | "N" => false,
-				_ => panic!("TODO: msg and repeat"),
-			};
-
-			if confirmed {
-				fs::raw::remove(path).unwrap();
+			match confirm(&path) {
+				Confirm::Yes => fs::raw::remove(path).unwrap(),
+				Confirm::No => continue,
+				Confirm::Quit => break,
 			}
 		}
 
 		Ok(Value::nothing(call.head).into_pipeline_data())
+	}
+}
+
+enum Confirm {
+	Yes,
+	No,
+	Quit,
+}
+
+fn confirm(path: &Path) -> Confirm {
+	let mut answer = String::new();
+
+	loop {
+		print!("remove permanently: {path:?}  [y/n/q]: ");
+		io::stdout().flush().unwrap();
+		answer.clear();
+		io::stdin().read_line(&mut answer).unwrap();
+
+		match answer.trim() {
+			"y" | "Y" => return Confirm::Yes,
+			"n" | "N" => return Confirm::No,
+			"q" | "Q" => return Confirm::Quit,
+			_ => {
+				println!("Invalid option.  Expected 'y', 'n', or 'q'");
+			}
+		};
 	}
 }
