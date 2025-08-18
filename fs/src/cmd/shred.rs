@@ -9,7 +9,7 @@ use std::{
 	path::PathBuf,
 };
 
-use crate::{util, FsPlugin};
+use crate::{fs, FsPlugin};
 
 pub struct Shred;
 
@@ -89,7 +89,7 @@ impl PluginCommand for Shred {
 			};
 
 			if confirmed {
-				util::remove(path).unwrap();
+				fs::raw::remove(path).unwrap();
 			}
 		}
 
