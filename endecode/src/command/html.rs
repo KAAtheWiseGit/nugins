@@ -29,7 +29,7 @@ impl PluginCommand for HtmlDecode {
 		vec!["decoding", "html"]
 	}
 
-	fn examples(&self) -> Vec<Example> {
+	fn examples(&self) -> Vec<Example<'_>> {
 		vec![Example {
 			description: "Unescape HTML-encoded strings",
 			example: "'a &gt; b &amp;&amp; a &lt; c' | decode html",
@@ -74,7 +74,7 @@ impl PluginCommand for HtmlEncode {
 		vec!["encoding", "html"]
 	}
 
-	fn examples(&self) -> Vec<Example> {
+	fn examples(&self) -> Vec<Example<'_>> {
 		vec![Example {
 			description: "Escape HTML special characters",
 			example:

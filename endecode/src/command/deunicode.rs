@@ -28,7 +28,7 @@ impl PluginCommand for Deunicode {
 		vec!["decoding"]
 	}
 
-	fn examples(&self) -> Vec<Example> {
+	fn examples(&self) -> Vec<Example<'_>> {
 		vec![
 			Example {
 				description: "Latin-derived letters",

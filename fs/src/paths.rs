@@ -84,12 +84,8 @@ impl Iterator for PathsIter {
 			return Some(Ok(item));
 		}
 
-		let Some(input) = self.stream.as_mut() else {
-			return None;
-		};
-		let Some(item) = input.next_value() else {
-			return None;
-		};
+		let input = self.stream.as_mut()?;
+		let item = input.next_value()?;
 
 		Some(value_to_glob(&item))
 	}
