@@ -5,5 +5,5 @@ export extern img2pdf [
 	--output (-o): path # Makes the program output to a file instead of standard output
 
 
-	...infile: path
+	...infile: glob
 ]
