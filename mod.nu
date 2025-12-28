@@ -9,7 +9,7 @@ const DEFAULT = {
 	write: []
 }
 
-def "open config" [path: path] {
+export def "open config" [path: path] {
 	let config = open $path
 	mut config = $DEFAULT | merge $config
 
@@ -101,11 +101,10 @@ def "make cmd" [] {
 export def main --wrapped [
 	--exec
 
-	path: path
-
 	...args
 ] {
-	let cmd = open config $path | make cmd
+	let config = $in
+	let cmd = $config | make cmd
 
 	if $exec {
 		exec ...$cmd ...$args
