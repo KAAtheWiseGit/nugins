@@ -122,7 +122,8 @@ export def delete [
 
 	check_secret_name_exists $path (metadata $name).span
 
-	git_commit --rm $name "delete secret"
+	rm --permanent $path
+	git_commit $name "delete secret"
 }
 
 # Move an existing secret to another path.
@@ -141,7 +142,7 @@ export def move [
 	mkdir ($new_path | path dirname)
 	mv --force $old_path $new_path
 
-	git_commit $new_name $"rename from ($old_name)"
+	git_commit $new_name $"rename from ($old_name)" [$old_path]
 }
 
 # Synchronize the secrets git repository with the upstream.
