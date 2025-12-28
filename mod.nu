@@ -9,26 +9,9 @@ const DEFAULT = {
 	write: []
 }
 
-export def "open config" [path: path] {
-	let config = open $path
-	mut config = $DEFAULT | merge $config
-
-	# get the imports
-	let imports = $config.import
-	$config.import = null
-
-	let dir = $path | path dirname
-	for import in $imports {
-		let import_path = [$dir $import] | path join
-		let import_config = open config $import_path
-		$config = $import_config | merge deep --strategy append $config
-	}
-
-	$config
-}
-
 def "make cmd" [] {
 	let config = $in
+	let config = $DEFAULT | merge $config
 
 	mut cmd = [/usr/bin/bwrap]
 
