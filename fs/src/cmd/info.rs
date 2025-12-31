@@ -1,12 +1,13 @@
 use nu_plugin::{EngineInterface, EvaluatedCall, PluginCommand};
 use nu_protocol::{
-	Category, IntoPipelineData, LabeledError, PipelineData, Signature,
-	Spanned, SyntaxShape, Type, Value,
+	Category, IntoInterruptiblePipelineData, LabeledError, PipelineData,
+	Signature, SyntaxShape, Type, Value,
 };
 
 use std::fs::symlink_metadata;
 use std::path::PathBuf;
 
+use crate::utils::get_args;
 use crate::utils::info::metadata_to_record;
 use crate::FsPlugin;
 
@@ -26,8 +27,15 @@ impl PluginCommand for Info {
 	fn signature(&self) -> Signature {
 		Signature::build(self.name())
 			.category(Category::FileSystem)
-			.input_output_type(Type::Nothing, Type::record())
-			.required("path", SyntaxShape::Filepath, "File path")
+			.input_output_type(
+				Type::one_of([
+					Type::Nothing,
+					Type::Glob,
+					Type::list(Type::Glob),
+				]),
+				Type::record(),
+			)
+			.rest("paths", SyntaxShape::GlobPattern, "File path")
 	}
 
 	fn search_terms(&self) -> Vec<&str> {
@@ -39,16 +47,28 @@ impl PluginCommand for Info {
 		_plugin: &FsPlugin,
 		engine: &EngineInterface,
 		call: &EvaluatedCall,
-		_input: PipelineData,
+		input: PipelineData,
 	) -> Result<PipelineData, LabeledError> {
-		let path: Spanned<PathBuf> = call.req(0)?;
+		std::env::set_current_dir(engine.get_current_dir()?).unwrap();
+
 		let span = call.head;
+		let iter = get_args(call, input);
 
-		let cwd = PathBuf::from(engine.get_current_dir()?);
-		let metadata = symlink_metadata(cwd.join(&path.item)).unwrap();
-		let record = metadata_to_record(span, &path.item, &metadata);
-		let value = Value::record(record, span);
+		let values = iter
+			.map(|path| -> Result<Value, LabeledError> {
+				let cwd = PathBuf::from(
+					engine.get_current_dir()?,
+				);
+				let metadata =
+					symlink_metadata(cwd.join(&path))
+						.unwrap();
+				let record = metadata_to_record(
+					span, &path, &metadata,
+				);
+				Ok(Value::record(record, span))
+			})
+			.collect::<Result<Vec<Value>, LabeledError>>()?;
 
-		Ok(value.into_pipeline_data())
+		Ok(values.into_pipeline_data(span, engine.signals().clone()))
 	}
 }

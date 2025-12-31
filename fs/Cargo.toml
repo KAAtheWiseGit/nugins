@@ -10,5 +10,6 @@ keywords = ["nushell", "nushell-plugin", "filesystem"]
 
 [dependencies]
 chrono = { workspace = true }
+nu-glob = { workspace = true }
 nu-plugin = { workspace = true }
 nu-protocol = { workspace = true }

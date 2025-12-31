@@ -1009,6 +1009,7 @@ name = "nu_plugin_fs"
 version = "0.109.0"
 dependencies = [
  "chrono",
+ "nu-glob",
  "nu-plugin",
  "nu-protocol",
 ]

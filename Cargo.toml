@@ -13,6 +13,7 @@ authors = ["Andrej Kolčin <self@kaathewise.net>"]
 repository = "https://github.com/kaathewisegit/nugins"
 
 [workspace.dependencies]
+nu-glob = "0.109.0"
 nu-json = "0.109.0"
 nu-plugin = "0.109.0"
 nu-protocol = { version = "0.109.0", features = ["plugin"] }
