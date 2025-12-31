@@ -3,7 +3,7 @@ use nu_plugin::{serve_plugin, MsgPackSerializer, Plugin, PluginCommand};
 mod cmd;
 mod fs;
 mod paths;
-mod util;
+mod utils;
 
 pub struct FsPlugin;
 
@@ -14,8 +14,9 @@ impl Plugin for FsPlugin {
 
 	fn commands(&self) -> Vec<Box<dyn PluginCommand<Plugin = Self>>> {
 		vec![
-			Box::new(cmd::Fs),
 			Box::new(cmd::Delete),
+			Box::new(cmd::Fs),
+			Box::new(cmd::Info),
 			Box::new(cmd::List),
 			Box::new(cmd::Shred),
 		]
