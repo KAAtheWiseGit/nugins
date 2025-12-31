@@ -28,7 +28,20 @@ pub fn metadata_to_record(
 }
 
 pub fn fs_type(metadata: FileType) -> &'static str {
-	// TODO: FileTypeExt
+	#[cfg(unix)]
+	use std::os::unix::fs::FileTypeExt;
+
+	#[cfg(unix)]
+	if metadata.is_block_device() {
+		return "block device";
+	} else if metadata.is_char_device() {
+		return "char device";
+	} else if metadata.is_fifo() {
+		return "fifo";
+	} else if metadata.is_socket() {
+		return "socket";
+	}
+
 	if metadata.is_dir() {
 		"dir"
 	} else if metadata.is_file() {
