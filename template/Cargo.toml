@@ -1,13 +1,13 @@
 [package]
 name = "nu_plugin_template"
-version = "0.109.0"
+version = "0.110.0"
 edition.workspace = true
 authors.workspace = true
 repository.workspace = true
 license.workspace = true
 description = "Templating in Nushell, powered by TinyTemplate"
 categories = ["template-engine"]
-keywords = ["nushell", "nushell-plugin", "template"]
+keywords = ["nushell", "plugin", "template"]
 
 [dependencies]
 nu-plugin = { workspace = true }
