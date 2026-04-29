@@ -27,3 +27,8 @@ html-escape = "0.2"
 serde_json = "1.0"
 tinytemplate = "1.2"
 z85 = "3.0"
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
