@@ -21,7 +21,11 @@ impl PluginCommand for Base58Decode {
 	}
 
 	fn signature(&self) -> Signature {
-		crate::util::decode_signature(self.name()).required("alphabet", SyntaxShape::String, "Alphabet to use: can be 'bitcoin', 'monero', 'ripple', or 'flickr'")
+		crate::util::decode_signature(self.name()).required(
+			"alphabet",
+			SyntaxShape::String,
+			"Alphabet to use: can be 'bitcoin', 'monero', 'ripple', or 'flickr'",
+		)
 	}
 
 	fn search_terms(&self) -> Vec<&str> {
@@ -43,7 +47,10 @@ impl PluginCommand for Base58Decode {
 			"ripple" => Alphabet::RIPPLE,
 			"flickr" => Alphabet::FLICKR,
 			_ => {
-				return Err(LabeledError::new("Alphabet must be one of 'bitcoin', 'monero', 'ripple', or 'flickr'").with_label("Unknown alphabet", call.head));
+				return Err(LabeledError::new(
+					"Alphabet must be one of 'bitcoin', 'monero', 'ripple', or 'flickr'",
+				)
+				.with_label("Unknown alphabet", call.head));
 			}
 		};
 		let decode = decode(string).with_alphabet(alphabet).into_vec();
@@ -71,7 +78,11 @@ impl PluginCommand for Base58Encode {
 	}
 
 	fn signature(&self) -> Signature {
-		crate::util::encode_signature(self.name()).required("alphabet", SyntaxShape::String, "Alphabet to use: can be 'bitcoin', 'monero', 'ripple', or 'flickr'")
+		crate::util::encode_signature(self.name()).required(
+			"alphabet",
+			SyntaxShape::String,
+			"Alphabet to use: can be 'bitcoin', 'monero', 'ripple', or 'flickr'",
+		)
 	}
 
 	fn search_terms(&self) -> Vec<&str> {
@@ -92,7 +103,10 @@ impl PluginCommand for Base58Encode {
 			"ripple" => Alphabet::RIPPLE,
 			"flickr" => Alphabet::FLICKR,
 			_ => {
-				return Err(LabeledError::new("Alphabet must be one of 'bitcoin', 'monero', 'ripple', or 'flickr'").with_label("Unknown alphabet", call.head));
+				return Err(LabeledError::new(
+					"Alphabet must be one of 'bitcoin', 'monero', 'ripple', or 'flickr'",
+				)
+				.with_label("Unknown alphabet", call.head));
 			}
 		};
 		let out = encode(bytes).with_alphabet(alphabet).into_string();

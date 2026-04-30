@@ -7,9 +7,9 @@ use nu_protocol::{
 use std::fs::symlink_metadata;
 use std::path::PathBuf;
 
+use crate::FsPlugin;
 use crate::utils::get_args;
 use crate::utils::info::metadata_to_record;
-use crate::FsPlugin;
 
 pub struct Info;
 

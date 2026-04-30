@@ -1,6 +1,6 @@
 use std::{collections::VecDeque, path::PathBuf};
 
-use nu_glob::{glob, Paths, Uninterruptible};
+use nu_glob::{Paths, Uninterruptible, glob};
 use nu_plugin::EvaluatedCall;
 use nu_protocol::{FromValue, NuGlob, PipelineData, Value, ValueIterator};
 

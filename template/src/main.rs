@@ -1,10 +1,10 @@
 use tinytemplate::{
-	error::Error as TError, format, format_unescaped, TinyTemplate,
+	TinyTemplate, error::Error as TError, format, format_unescaped,
 };
 
 use nu_plugin::{
-	serve_plugin, EngineInterface, EvaluatedCall, MsgPackSerializer,
-	Plugin, PluginCommand,
+	EngineInterface, EvaluatedCall, MsgPackSerializer, Plugin,
+	PluginCommand, serve_plugin,
 };
 use nu_protocol::{
 	Category, IntoPipelineData, LabeledError, PipelineData, Signature,

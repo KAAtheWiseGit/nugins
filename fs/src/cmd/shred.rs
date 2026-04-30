@@ -9,7 +9,7 @@ use std::{
 	path::{Path, PathBuf},
 };
 
-use crate::{fs, FsPlugin};
+use crate::{FsPlugin, fs};
 
 pub struct Shred;
 
@@ -104,7 +104,9 @@ fn confirm(path: &Path) -> Confirm {
 			"n" | "N" => return Confirm::No,
 			"q" | "Q" => return Confirm::Quit,
 			_ => {
-				println!("Invalid option.  Expected 'y', 'n', or 'q'");
+				println!(
+					"Invalid option.  Expected 'y', 'n', or 'q'"
+				);
 			}
 		};
 	}

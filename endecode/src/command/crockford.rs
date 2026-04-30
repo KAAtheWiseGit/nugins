@@ -1,4 +1,4 @@
-use base32::{decode, encode, Alphabet};
+use base32::{Alphabet, decode, encode};
 use nu_plugin::{EngineInterface, EvaluatedCall, PluginCommand};
 use nu_protocol::{
 	IntoPipelineData, LabeledError, PipelineData, Signature, Value,

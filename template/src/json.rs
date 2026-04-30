@@ -55,7 +55,7 @@ pub fn value_to_json_value(v: &Value) -> Result<JsonValue, LabeledError> {
 				.with_label(
 					v.get_type().to_string(),
 					v.span(),
-				))
+				));
 		}
 
 		Value::Error { error, .. } => {

@@ -11,7 +11,7 @@ use std::{
 	path::PathBuf,
 };
 
-use crate::{paths::PathsIter, FsPlugin};
+use crate::{FsPlugin, paths::PathsIter};
 
 pub struct List;
 

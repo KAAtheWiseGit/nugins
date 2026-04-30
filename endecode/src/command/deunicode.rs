@@ -46,8 +46,7 @@ impl PluginCommand for Deunicode {
 				result: Some(Value::test_string(":)")),
 			},
 			Example {
-				description:
-					"Han characters are mapped to Mandarin",
+				description: "Han characters are mapped to Mandarin",
 				example: "'北亰' | decode unicode",
 				result: Some(Value::test_string("Bei Jing")),
 			},

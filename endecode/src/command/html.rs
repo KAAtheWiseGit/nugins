@@ -77,8 +77,7 @@ impl PluginCommand for HtmlEncode {
 	fn examples(&self) -> Vec<Example<'_>> {
 		vec![Example {
 			description: "Escape HTML special characters",
-			example:
-				"'<script>alert('pwn!')</script>' | decode html",
+			example: "'<script>alert('pwn!')</script>' | decode html",
 			result: Some(Value::test_string(
 				"&lt;script&gt;alert('pwn!')&lt;/script&gt;",
 			)),
