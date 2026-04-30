@@ -1,6 +1,6 @@
 [package]
 name = "nu_plugin_endecode"
-version = "0.110.0"
+version = "0.112.0"
 edition.workspace = true
 authors.workspace = true
 repository.workspace = true
@@ -9,12 +9,11 @@ description = "A plugin with various encoding schemes, from Crockford's base-32 
 keywords = ["nushell", "plugin", "codec"]
 
 [dependencies]
-nu-plugin = { workspace = true }
-nu-protocol = { workspace = true }
-
 base32 = { workspace = true }
 base62 = { workspace = true }
 bs58 = { workspace = true, features = ["alloc"] }
 deunicode = { workspace = true }
 html-escape = { workspace = true }
+nu-plugin = { workspace = true }
+nu-protocol = { workspace = true }
 z85 = { workspace = true }
