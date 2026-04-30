@@ -1,9 +1,10 @@
 use chrono::{DateTime, FixedOffset, Utc};
-use nu_protocol::{record, Filesize, Record, Span, Value};
+use nu_protocol::{Filesize, Record, Span, Value, record};
 
+#[cfg(unix)]
+use std::os::unix::fs::{FileTypeExt, MetadataExt};
 use std::{
 	fs::{FileType, Metadata},
-	os::unix::fs::MetadataExt,
 	path::Path,
 };
 
@@ -28,9 +29,6 @@ pub fn metadata_to_record(
 }
 
 pub fn fs_type(metadata: FileType) -> &'static str {
-	#[cfg(unix)]
-	use std::os::unix::fs::FileTypeExt;
-
 	#[cfg(unix)]
 	if metadata.is_block_device() {
 		return "block device";
