@@ -18,7 +18,7 @@ pub fn get_args(call: &EvaluatedCall, input: PipelineData) -> Iter {
 						call_args.push_front(value);
 					}
 				}
-				value @ _ => call_args.push_front(value),
+				value => call_args.push_front(value),
 			}
 			None
 		}
