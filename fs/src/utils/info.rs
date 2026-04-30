@@ -2,7 +2,7 @@ use chrono::{DateTime, FixedOffset, Utc};
 use nu_protocol::{Filesize, Record, Span, Value, record};
 
 #[cfg(unix)]
-use std::os::unix::fs::{FileTypeExt, MetadataExt};
+use std::os::unix::fs::FileTypeExt;
 use std::{
 	fs::{FileType, Metadata},
 	path::Path,
@@ -14,7 +14,7 @@ pub fn metadata_to_record(
 	metadata: &Metadata,
 ) -> Record {
 	let file_type = fs_type(metadata.file_type());
-	let size = Filesize::new(metadata.size() as i64);
+	let size = Filesize::new(metadata.len() as i64);
 	let modified: DateTime<Utc> = metadata.modified().unwrap().into();
 	let modified: DateTime<FixedOffset> = modified.into();
 
