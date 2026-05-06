@@ -1,15 +1,15 @@
 use nu_plugin::{EngineInterface, EvaluatedCall, PluginCommand};
 use nu_protocol::{
-	Category, IntoInterruptiblePipelineData, LabeledError, PipelineData,
-	Signature, SyntaxShape, Type, Value,
+	Category, IntoInterruptiblePipelineData, LabeledError, NuGlob,
+	PipelineData, Signature, SyntaxShape, Type, Value,
 };
 
 use std::fs::symlink_metadata;
-use std::path::PathBuf;
 
-use crate::FsPlugin;
-use crate::utils::get_args;
-use crate::utils::info::metadata_to_record;
+use crate::{
+	FsPlugin,
+	utils::{GlobsIter, info::metadata_to_record},
+};
 
 pub struct Info;
 
@@ -47,21 +47,17 @@ impl PluginCommand for Info {
 		_plugin: &FsPlugin,
 		engine: &EngineInterface,
 		call: &EvaluatedCall,
-		input: PipelineData,
+		_input: PipelineData,
 	) -> Result<PipelineData, LabeledError> {
 		std::env::set_current_dir(engine.get_current_dir()?).unwrap();
 
 		let span = call.head;
-		let iter = get_args(call, input);
+		let globs = call.rest::<NuGlob>(0)?;
 
-		let values = iter
+		let values = GlobsIter::new(globs)
 			.map(|path| -> Result<Value, LabeledError> {
-				let cwd = PathBuf::from(
-					engine.get_current_dir()?,
-				);
-				let metadata =
-					symlink_metadata(cwd.join(&path))
-						.unwrap();
+				let path = path.unwrap();
+				let metadata = symlink_metadata(&path).unwrap();
 				let record = metadata_to_record(
 					span, &path, &metadata,
 				);

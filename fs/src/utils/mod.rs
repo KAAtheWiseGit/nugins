@@ -1,4 +1,4 @@
-mod args;
+mod globs;
 pub mod info;
 
-pub use args::get_args;
+pub use globs::GlobsIter;

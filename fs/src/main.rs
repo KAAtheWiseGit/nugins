@@ -2,7 +2,6 @@ use nu_plugin::{MsgPackSerializer, Plugin, PluginCommand, serve_plugin};
 
 mod cmd;
 mod fs;
-mod paths;
 mod utils;
 
 pub struct FsPlugin;
