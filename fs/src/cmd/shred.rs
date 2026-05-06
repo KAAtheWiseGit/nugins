@@ -1,15 +1,15 @@
 use nu_plugin::{EngineInterface, EvaluatedCall, PluginCommand};
 use nu_protocol::{
 	Category, IntoPipelineData, LabeledError, NuGlob, PipelineData,
-	Signature, Spanned, SyntaxShape, Type, Value,
+	Signature, SyntaxShape, Type, Value,
 };
 
 use std::{
 	io::{self, Write},
-	path::{Path, PathBuf},
+	path::Path,
 };
 
-use crate::{FsPlugin, fs};
+use crate::{FsPlugin, fs, utils::GlobsIter};
 
 pub struct Shred;
 
@@ -49,16 +49,10 @@ impl PluginCommand for Shred {
 		call: &EvaluatedCall,
 		_input: PipelineData,
 	) -> Result<PipelineData, LabeledError> {
-		let paths = call.rest::<Spanned<NuGlob>>(0)?;
+		std::env::set_current_dir(engine.get_current_dir()?).unwrap();
 
-		if engine.is_using_stdio() {
-			panic!("TODO: error");
-		}
-
-		let cwd = PathBuf::from(engine.get_current_dir()?);
-		let _guard = engine.enter_foreground();
-
-		if paths.is_empty() {
+		let globs = call.rest::<NuGlob>(0)?;
+		if globs.is_empty() {
 			return Err(LabeledError::new("requires file paths")
 				.with_label(
 					"no paths were passed",
@@ -66,12 +60,16 @@ impl PluginCommand for Shred {
 				));
 		}
 
+		let paths = GlobsIter::new(globs).peekable();
+
+		if engine.is_using_stdio() {
+			panic!("TODO: error");
+		}
+
+		let _guard = engine.enter_foreground();
+
 		for path in paths {
-			let path = match path.item {
-				NuGlob::DoNotExpand(s) => s,
-				NuGlob::Expand(s) => s,
-			};
-			let path = cwd.join(path);
+			let path = path.unwrap();
 
 			match confirm(&path) {
 				Confirm::Yes => fs::raw::remove(path).unwrap(),
