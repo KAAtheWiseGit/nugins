@@ -1,0 +1,53 @@
+name: Upload binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact_name: linux
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact_name: windows
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact_name: macos
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build Workspace
+        run: cargo build --release --locked --target ${{ matrix.target }}
+
+      - name: Package and Upload
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BINS=("nu_plugin_endecode" "nu_plugin_fs" "nu_plugin_template")
+          TAG=${GITHUB_REF#refs/tags/}
+
+          for bin in "${BINS[@]}"; do
+            ARCHIVE_NAME="${bin}-${TAG}-${{ matrix.target }}"
+
+            if [ "${{ matrix.os }}" = "windows-latest" ]; then
+              powershell Compress-Archive -Path "target/${{ matrix.target }}/release/$bin.exe" -DestinationPath "${ARCHIVE_NAME}.zip"
+              UPLOAD_FILE="${ARCHIVE_NAME}.zip"
+            else
+              tar -czvf "${ARCHIVE_NAME}.tar.gz" -C "target/${{ matrix.target }}/release" "$bin"
+              UPLOAD_FILE="${ARCHIVE_NAME}.tar.gz"
+            fi
+
+            gh release upload "$TAG" "$UPLOAD_FILE" --clobber
+          done
