@@ -1,6 +1,6 @@
 [package]
 name = "nu_plugin_template"
-version = "0.112.0"
+version = "0.113.1"
 edition.workspace = true
 authors.workspace = true
 repository.workspace = true
