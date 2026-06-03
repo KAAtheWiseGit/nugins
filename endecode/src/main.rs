@@ -14,6 +14,8 @@ impl Plugin for EndecodePlugin {
 		vec![
 			Box::new(command::Base58Decode),
 			Box::new(command::Base58Encode),
+			Box::new(command::Base62Decode),
+			Box::new(command::Base62Encode),
 			Box::new(command::CrockfordDecode),
 			Box::new(command::CrockfordEncode),
 			Box::new(command::HtmlDecode),

@@ -1,4 +1,5 @@
 mod base58;
+mod base62;
 mod crockford;
 mod deunicode;
 mod html;
@@ -6,6 +7,7 @@ mod z32;
 mod z85;
 
 pub use base58::{Base58Decode, Base58Encode};
+pub use base62::{Base62Decode, Base62Encode};
 pub use crockford::{CrockfordDecode, CrockfordEncode};
 pub use deunicode::Deunicode;
 pub use html::{HtmlDecode, HtmlEncode};
